@@ -102,6 +102,7 @@ public class ChartPanel extends JPanel
 
         paintCharts(g2d);
         drawYAxis(g2d);
+        drawXAxis(g2d);
     }
 
     private void paintCharts(Graphics2D g2d)
@@ -127,6 +128,29 @@ public class ChartPanel extends JPanel
             int stepLineY = toAbsoluteY(relStepLineY);
             g2d.drawLine(5, stepLineY, 15, stepLineY);
             g2d.drawString("" + relStepLineY, 20, stepLineY);
+        }
+    }
+
+    private void drawXAxis(Graphics2D g2d)
+    {
+        int xAxisYCoord = getHeight() - 15;
+        g2d.setStroke(AXIS_STROKE);
+        g2d.setColor(AXIS_COLOR);
+        g2d.drawLine(0, xAxisYCoord, getWidth(), xAxisYCoord);
+
+        drawXStepLines(g2d);
+    }
+
+    private void drawXStepLines(Graphics2D g2d)
+    {
+        float stepWidth = 1;
+        int start = (int) (this.position.getX() / stepWidth);
+        int end = (int) ((this.position.getX() + this.chartWidth) / stepWidth) + 1;
+        for(int i = start; i < end; i++) {
+            int relStepLineX = (int) (i * stepWidth);
+            int stepLineX = toAbsoluteX(relStepLineX);
+            g2d.drawLine(stepLineX, getHeight() - 10, stepLineX, getHeight() - 20);
+            g2d.drawString("" + relStepLineX, stepLineX - 5, getHeight());
         }
     }
 
