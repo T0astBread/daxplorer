@@ -6,11 +6,11 @@ import java.awt.event.ActionEvent;
 
 public class MainWindow
 {
-    private JPanel mainPanel;
+    public JPanel mainPanel;
     private JTextField chartHeightField;
-    private ChartPanel chartPanel;
+    public ChartPanel chartPanel;
 
-    public static void main(String[] args)
+    public void show()
     {
         JFrame frame = new JFrame("MainWindow");
         frame.setPreferredSize(new Dimension(800, 600));
@@ -23,6 +23,8 @@ public class MainWindow
 
     public MainWindow()
     {
+        this.chartPanel.setChartWidth(20);
+
         this.chartHeightField.addActionListener(new AbstractAction()
         {
             @Override

@@ -25,4 +25,4 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-mainClassName = 'io.rightpad.daxplorer.MainWindow'
+mainClassName = 'io.rightpad.daxplorer.Main'

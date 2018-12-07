@@ -1,12 +1,20 @@
 package io.rightpad.daxplorer;
 
+import io.rightpad.daxplorer.charts.Chart;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ChartPanel extends JPanel
 {
     private PointF position = new PointF(0, 0);
     private float chartWidth = 100, chartHeight = 100;
+
+    private List<ChartEntry> charts = new LinkedList<>();
+
 
     public PointF getPosition()
     {
@@ -64,6 +72,25 @@ public class ChartPanel extends JPanel
         return getHeight() - (int) ((relY - this.position.getY()) * getHeightRelation());
     }
 
+    public void addChart(Chart chart)
+    {
+        System.out.println("Adding chart " + chart);
+        this.charts.add(new ChartEntry(chart));
+        repaint();
+    }
+
+    public void setChartEnabled(Chart chart, boolean enabled)
+    {
+        this.charts.stream()
+                .filter(c -> c.chart == chart)
+                .forEach(c -> c.enabled = enabled);
+    }
+
+    public void removeChart(Chart chart)
+    {
+        this.charts.removeIf(c -> c.chart == chart);
+    }
+
     private static final Color AXIS_COLOR = Color.DARK_GRAY;
     private static final Stroke AXIS_STROKE = new BasicStroke(2);
 
@@ -73,7 +100,13 @@ public class ChartPanel extends JPanel
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
+        paintCharts(g2d);
         drawYAxis(g2d);
+    }
+
+    private void paintCharts(Graphics2D g2d)
+    {
+        this.charts.forEach(c -> c.chart.draw(this, g2d));
     }
 
     private void drawYAxis(Graphics2D g2d)
@@ -94,6 +127,18 @@ public class ChartPanel extends JPanel
             int stepLineY = toAbsoluteY(relStepLineY);
             g2d.drawLine(5, stepLineY, 15, stepLineY);
             g2d.drawString("" + relStepLineY, 20, stepLineY);
+        }
+    }
+
+    private static class ChartEntry
+    {
+        final Chart chart;
+        boolean enabled;
+
+        public ChartEntry(Chart chart)
+        {
+            this.chart = chart;
+            this.enabled = true;
         }
     }
 }
