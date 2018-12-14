@@ -1,3 +1,5 @@
+package io.rightpad.daxplorer;
+
 import io.rightpad.daxplorer.MainWindow;
 
 public class Main

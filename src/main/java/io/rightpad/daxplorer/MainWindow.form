@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="io.rightpad.daxplorer.MainWindow">
-  <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridBagLayout">
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="515" height="430"/>
     </constraints>
-    <properties>
-      <minimumSize width="1" height="1"/>
-      <preferredSize width="1" height="1"/>
-    </properties>
+    <properties/>
     <border type="none"/>
     <children>
-      <component id="a078e" class="io.rightpad.daxplorer.ChartPanel" binding="chartPanel">
-        <constraints border-constraint="Center"/>
-        <properties/>
-      </component>
-      <component id="86773" class="javax.swing.JTextField" binding="chartHeightField">
-        <constraints border-constraint="South"/>
+      <scrollpane id="1e3d4">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <preferredSize width="0" height="0"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="2609a" class="javax.swing.JList" binding="visualizerList">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
+      <component id="848a6" class="io.rightpad.daxplorer.visualization.VisualizationPanel" binding="visualizationPanel">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="3.0" weighty="1.0"/>
+        </constraints>
         <properties/>
       </component>
     </children>

@@ -1,10 +1,9 @@
-package io.rightpad.daxplorer;
+package io.rightpad.daxplorer.visualization;
 
-import io.rightpad.daxplorer.charts.Chart;
+import io.rightpad.daxplorer.visualization.charts.Chart;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -1,39 +1,29 @@
 package io.rightpad.daxplorer;
 
+import io.rightpad.daxplorer.visualization.VisualizationPanel;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class MainWindow
 {
-    public JPanel mainPanel;
-    private JTextField chartHeightField;
-    public ChartPanel chartPanel;
-
-    public void show()
-    {
-        JFrame frame = new JFrame("MainWindow");
-        frame.setPreferredSize(new Dimension(800, 600));
-        frame.setContentPane(new MainWindow().mainPanel);
-        frame.getContentPane().setBackground(Color.CYAN);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-    }
+    private JPanel mainPanel;
+    private VisualizationPanel visualizationPanel;
+    private JList visualizerList;
 
     public MainWindow()
     {
-        this.chartPanel.setChartWidth(20);
+        this.visualizationPanel.setChartWidth(25);
+    }
 
-        this.chartHeightField.addActionListener(new AbstractAction()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                chartPanel.setChartHeight(Integer.parseInt(chartHeightField.getText()));
-                chartPanel.setPosition(new PointF(chartPanel.getPosition().getX(), -chartPanel.getChartHeight() / 2f));
-            }
-        });
+    public void show()
+    {
+        JFrame frame = new JFrame("daxplorer");
+        frame.setPreferredSize(new Dimension(1000, 600));
+        frame.setContentPane(new MainWindow().mainPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }
 
     {
@@ -53,13 +43,27 @@ public class MainWindow
     private void $$$setupUI$$$()
     {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(0, 0));
-        mainPanel.setMinimumSize(new Dimension(1, 1));
-        mainPanel.setPreferredSize(new Dimension(1, 1));
-        chartPanel = new ChartPanel();
-        mainPanel.add(chartPanel, BorderLayout.CENTER);
-        chartHeightField = new JTextField();
-        mainPanel.add(chartHeightField, BorderLayout.SOUTH);
+        mainPanel.setLayout(new GridBagLayout());
+        final JScrollPane scrollPane1 = new JScrollPane();
+        scrollPane1.setPreferredSize(new Dimension(0, 0));
+        GridBagConstraints gbc;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        mainPanel.add(scrollPane1, gbc);
+        visualizerList = new JList();
+        scrollPane1.setViewportView(visualizerList);
+        visualizationPanel = new VisualizationPanel();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 3.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        mainPanel.add(visualizationPanel, gbc);
     }
 
     /**

@@ -1,7 +1,7 @@
-package io.rightpad.daxplorer.charts;
+package io.rightpad.daxplorer.visualization.charts;
 
-import io.rightpad.daxplorer.PointF;
-import io.rightpad.daxplorer.ChartPanel;
+import io.rightpad.daxplorer.visualization.PointF;
+import io.rightpad.daxplorer.visualization.ChartPanel;
 
 import java.awt.*;
 import java.util.LinkedList;

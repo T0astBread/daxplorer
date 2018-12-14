@@ -1,6 +1,6 @@
 package io.rightpad.daxplorer;
 
-import io.rightpad.daxplorer.charts.LineChart;
+import io.rightpad.daxplorer.visualization.charts.LineChart;
 import org.junit.Test;
 
 import java.awt.*;

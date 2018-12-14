@@ -1,7 +1,7 @@
 package io.rightpad.daxplorer;
 
-import io.rightpad.daxplorer.charts.Chart;
-import org.junit.Test;
+import io.rightpad.daxplorer.visualization.ChartPanel;
+import io.rightpad.daxplorer.visualization.charts.Chart;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +10,7 @@ public class ChartTest
 {
     public void openTestWindow(Chart chart)
     {
-        MainWindow window = new MainWindow();
+        TestWindow window = new TestWindow();
 
         JDialog testWindow = new JDialog();
         testWindow.setModal(true);
