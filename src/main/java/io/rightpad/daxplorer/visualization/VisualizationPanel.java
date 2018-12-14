@@ -1,7 +1,7 @@
 package io.rightpad.daxplorer.visualization;
 
 import io.rightpad.daxplorer.data.TimeSeriesDataPoint;
-import io.rightpad.daxplorer.visualization.visualizer.Visualizer;
+import io.rightpad.daxplorer.visualization.visualizers.Visualizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
