@@ -10,14 +10,14 @@ import java.util.stream.Stream;
 
 public class VisualizationPanel extends ChartPanel
 {
-    private List<Visualizer<TimeSeriesDataPoint>> visualizers = new ArrayList<>();
+    private List<Visualizer> visualizers = new ArrayList<>();
 
-    public void addVisualizers(Visualizer<TimeSeriesDataPoint>... visualizers)
+    public void addVisualizers(Visualizer... visualizers)
     {
         this.visualizers.addAll(Arrays.asList(visualizers));
     }
 
-    public Stream<Visualizer<TimeSeriesDataPoint>> getVisualizers()
+    public Stream<Visualizer> getVisualizers()
     {
         return this.visualizers.stream();
     }

@@ -1,0 +1,38 @@
+package io.rightpad.daxplorer.visualization.visualizers
+
+import io.rightpad.daxplorer.data.IndexDataPoint
+import io.rightpad.daxplorer.data.features.Feature
+import io.rightpad.daxplorer.data.features.IndexFeature
+import io.rightpad.daxplorer.daysSinceEpoch
+import io.rightpad.daxplorer.visualization.PointF
+import io.rightpad.daxplorer.visualization.charts.Chart
+import io.rightpad.daxplorer.visualization.charts.LineChart
+import java.awt.Color
+import java.time.LocalDateTime
+
+class IndexVisualizer: TimeSeriesVisualizer<IndexDataPoint>("Index") {
+    override val features: List<Feature<IndexDataPoint>>
+        get() = listOf(IndexFeature())
+    override val charts: List<Chart>
+        get() = listOf(this.lineChart)
+
+    private val lineChart = LineChart()
+
+    override fun visualize(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
+        this.features[0].featureData
+                .filter { dataPoint -> dataPoint.timestamp in startTimestamp..endTimestamp }
+                .sortedBy { dataPoint -> dataPoint.timestamp }
+                .forEach { dataPoint ->
+                    this.lineChart.addPoint(
+                            dataPoint.timestamp.daysSinceEpoch().toFloat(),
+                            dataPoint.end,
+                            when(dataPoint.trend) {
+                                (-1).toByte() -> Color.RED
+                                (1).toByte()  -> Color.GREEN
+                                else          -> Color.BLACK
+                            }
+                    )
+                }
+    }
+
+}

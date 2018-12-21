@@ -26,3 +26,9 @@ compileTestKotlin {
 }
 
 mainClassName = 'io.rightpad.daxplorer.Main'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.rightpad.daxplorer.Main'
+    }
+}
