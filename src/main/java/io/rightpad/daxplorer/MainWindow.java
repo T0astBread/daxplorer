@@ -308,8 +308,8 @@ public class MainWindow
         if(getSelectionStart() == null || getSelectionEnd() == null)
             return;
 
-        LocalDateTime selectionStart = getSelectionStart().plusDays(1),
-                selectionEnd = getSelectionEnd().plusDays(1);
+        LocalDateTime selectionStart = UtilsKt.floor(getSelectionStart()),
+                selectionEnd = UtilsKt.ceil(getSelectionEnd());
         this.selectedIndexData = this.indexData.stream()
                 .filter(dataPoint ->
                         dataPoint.getTimestamp().isAfter(selectionStart) &&
