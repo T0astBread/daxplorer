@@ -2,6 +2,7 @@ package io.rightpad.daxplorer;
 
 import io.rightpad.daxplorer.data.IndexDataPoint;
 import io.rightpad.daxplorer.uxsugar.SelectionChangeMouseListener;
+import io.rightpad.daxplorer.uxsugar.ViewportOffsetChangeMouseListener;
 import io.rightpad.daxplorer.visualization.PointF;
 import io.rightpad.daxplorer.visualization.VisualizationPanel;
 import io.rightpad.daxplorer.visualization.visualizers.DateSelectionVisualizer;
@@ -65,6 +66,7 @@ public class MainWindow
 
         updateViewportTextFields();
         initViewPortTextFieldListeners();
+        initMouseOffsetListeners();
 
         setSelectionStart(LocalDateTime.now().minusDays(6));
         setSelectionEnd(LocalDateTime.now().plusDays(1));
@@ -218,6 +220,13 @@ public class MainWindow
         return SwingUtils.validatedListener(textField, (textField1, actionEvent) ->
                 setter.accept(Float.parseFloat(textField1.getText()))
         );
+    }
+
+    private void initMouseOffsetListeners()
+    {
+        ViewportOffsetChangeMouseListener viewportOffsetChangeMouseListener = new ViewportOffsetChangeMouseListener(this.visualizationPanel);
+        this.visualizationPanel.addMouseMotionListener(viewportOffsetChangeMouseListener);
+        this.visualizationPanel.addMouseListener(viewportOffsetChangeMouseListener);
     }
 
     public void show()
