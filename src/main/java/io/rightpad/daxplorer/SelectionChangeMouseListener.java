@@ -27,6 +27,7 @@ public class SelectionChangeMouseListener extends MouseMotionAdapter implements 
         this.selectionVisualizer = selectionVisualizer;
 
         this.visualizationPanel.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+        this.visualizationPanel.setFocusable(true);
     }
 
     public Runnable getOnMouseDrag()
@@ -85,6 +86,8 @@ public class SelectionChangeMouseListener extends MouseMotionAdapter implements 
     {
         if(e.getButton() != SELECT_MOUSE_BUTTON)
             return;
+
+        this.visualizationPanel.requestFocus();
 
         this.selectionVisualizer.setSelectionStart(null);
         this.selectionVisualizer.setSelectionEnd(null);
