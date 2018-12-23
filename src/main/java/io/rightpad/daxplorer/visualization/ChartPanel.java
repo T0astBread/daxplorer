@@ -37,7 +37,7 @@ public class ChartPanel extends JPanel
         return chartWidth;
     }
 
-    public void setChartWidth(int chartWidth)
+    public void setChartWidth(float chartWidth)
     {
         System.out.println("Changing chart width from " + this.chartWidth + " to " + chartWidth);
         this.chartWidth = chartWidth;
@@ -49,7 +49,7 @@ public class ChartPanel extends JPanel
         return chartHeight;
     }
 
-    public void setChartHeight(int chartHeight)
+    public void setChartHeight(float chartHeight)
     {
         System.out.println("Changing chart height from " + this.chartHeight + " to " + chartHeight);
         this.chartHeight = chartHeight;

@@ -62,6 +62,7 @@ public class MainWindow
 
         initTrendButtons();
 
+        updateViewportTextFields();
         initViewPortTextFieldListeners();
 
         setSelectionStart(LocalDateTime.now().minusDays(6));
@@ -174,6 +175,18 @@ public class MainWindow
         this.visualizationPanel.addMouseMotionListener(selectionChangeMouseListener);
     }
 
+    private void updateViewportTextFields()
+    {
+        this.viewportSpanXTextField.setText(Float.toString(this.visualizationPanel.getChartWidth()));
+        this.viewportSpanYTextField.setText(Float.toString(this.visualizationPanel.getChartHeight()));
+
+        int posX = (int) Math.floor(this.visualizationPanel.getPosition().getX());
+        LocalDateTime dateOffset = UtilsKt.asEpochDays(posX, ZoneOffset.UTC);
+        this.viewportOffsetXTextField.setText(dateOffset.format(DATE_FORMAT));
+
+        this.viewportOffsetYTextField.setText(Float.toString(this.visualizationPanel.getPosition().getY()));
+    }
+
     private void initViewPortTextFieldListeners()
     {
         this.viewportSpanXTextField.addActionListener(viewportSpanTextFieldListener(
@@ -199,10 +212,10 @@ public class MainWindow
         ));
     }
 
-    private ActionListener viewportSpanTextFieldListener(JTextField textField, Consumer<Integer> setter)
+    private ActionListener viewportSpanTextFieldListener(JTextField textField, Consumer<Float> setter)
     {
         return SwingUtils.validatedListener(textField, (textField1, actionEvent) ->
-                setter.accept(Integer.parseInt(textField1.getText()))
+                setter.accept(Float.parseFloat(textField1.getText()))
         );
     }
 
@@ -467,7 +480,6 @@ public class MainWindow
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 3;
-        gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel1.add(viewportOffsetYTextField, gbc);
@@ -479,12 +491,19 @@ public class MainWindow
         gbc.anchor = GridBagConstraints.WEST;
         panel1.add(label5, gbc);
         final JLabel label6 = new JLabel();
-        label6.setText("days");
+        label6.setText("EUR");
         gbc = new GridBagConstraints();
         gbc.gridx = 3;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.WEST;
         panel1.add(label6, gbc);
+        final JLabel label7 = new JLabel();
+        label7.setText("EUR");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 3;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel1.add(label7, gbc);
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -514,15 +533,15 @@ public class MainWindow
         gbc.fill = GridBagConstraints.BOTH;
         panel2.add(panel3, gbc);
         panel3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null));
-        final JLabel label7 = new JLabel();
-        Font label7Font = this.$$$getFont$$$(null, -1, 16, label7.getFont());
-        if(label7Font != null) label7.setFont(label7Font);
-        label7.setText("From");
+        final JLabel label8 = new JLabel();
+        Font label8Font = this.$$$getFont$$$(null, -1, 16, label8.getFont());
+        if(label8Font != null) label8.setFont(label8Font);
+        label8.setText("From");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
-        panel3.add(label7, gbc);
+        panel3.add(label8, gbc);
         selectionStartTextField = new JTextField();
         Font selectionStartTextFieldFont = this.$$$getFont$$$(null, -1, 16, selectionStartTextField.getFont());
         if(selectionStartTextFieldFont != null) selectionStartTextField.setFont(selectionStartTextFieldFont);
@@ -535,15 +554,15 @@ public class MainWindow
         gbc.ipadx = 50;
         gbc.insets = new Insets(0, 5, 0, 5);
         panel3.add(selectionStartTextField, gbc);
-        final JLabel label8 = new JLabel();
-        Font label8Font = this.$$$getFont$$$(null, -1, 16, label8.getFont());
-        if(label8Font != null) label8.setFont(label8Font);
-        label8.setText("to");
+        final JLabel label9 = new JLabel();
+        Font label9Font = this.$$$getFont$$$(null, -1, 16, label9.getFont());
+        if(label9Font != null) label9.setFont(label9Font);
+        label9.setText("to");
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
-        panel3.add(label8, gbc);
+        panel3.add(label9, gbc);
         selectionEndTextField = new JTextField();
         Font selectionEndTextFieldFont = this.$$$getFont$$$(null, -1, 16, selectionEndTextField.getFont());
         if(selectionEndTextFieldFont != null) selectionEndTextField.setFont(selectionEndTextFieldFont);

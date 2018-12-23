@@ -106,7 +106,7 @@
           </component>
           <component id="24556" class="javax.swing.JTextField" binding="viewportOffsetYTextField">
             <constraints>
-              <grid row="3" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
               </grid>
               <gridbag weightx="0.0" weighty="0.0"/>
@@ -122,13 +122,22 @@
               <text value="days"/>
             </properties>
           </component>
-          <component id="fd29f" class="javax.swing.JLabel">
+          <component id="3b3bf" class="javax.swing.JLabel">
             <constraints>
               <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
               <gridbag weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
-              <text value="days"/>
+              <text value="EUR"/>
+            </properties>
+          </component>
+          <component id="a460a" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="EUR"/>
             </properties>
           </component>
         </children>

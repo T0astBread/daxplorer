@@ -43,7 +43,7 @@ public class VisualizationPanel extends ChartPanel
     }
 
     @Override
-    public void setChartWidth(int chartWidth)
+    public void setChartWidth(float chartWidth)
     {
         super.setChartWidth(chartWidth);
         visualize();
