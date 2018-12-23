@@ -285,8 +285,8 @@ public class MainWindow
 
     private void updateSelectionTextFields()
     {
-        updateSelectionTextField(this.selectionStartTextField, getSelectionStart());
-        updateSelectionTextField(this.selectionEndTextField, getSelectionEnd());
+        updateSelectionTextField(this.selectionStartTextField, UtilsKt.floor(getSelectionStart()));
+        updateSelectionTextField(this.selectionEndTextField, UtilsKt.ceil(getSelectionEnd()));
     }
 
     private void updateSelectionTextField(JTextField textField, LocalDateTime selection)

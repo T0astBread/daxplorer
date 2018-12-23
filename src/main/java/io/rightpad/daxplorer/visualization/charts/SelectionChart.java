@@ -7,7 +7,7 @@ import java.awt.*;
 public class SelectionChart implements Chart
 {
     private boolean isSelected;
-    private int selectionStart, selectionEnd;
+    private float selectionStart, selectionEnd;
     private Color color = new Color(93, 194, 81, 100);
 
     public boolean isSelected()
@@ -20,22 +20,22 @@ public class SelectionChart implements Chart
         isSelected = selected;
     }
 
-    public int getSelectionStart()
+    public float getSelectionStart()
     {
         return selectionStart;
     }
 
-    public void setSelectionStart(int selectionStart)
+    public void setSelectionStart(float selectionStart)
     {
         this.selectionStart = selectionStart;
     }
 
-    public int getSelectionEnd()
+    public float getSelectionEnd()
     {
         return selectionEnd;
     }
 
-    public void setSelectionEnd(int selectionEnd)
+    public void setSelectionEnd(float selectionEnd)
     {
         this.selectionEnd = selectionEnd;
     }

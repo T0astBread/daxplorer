@@ -59,8 +59,8 @@ public class SelectionChangeMouseListener extends MouseMotionAdapter implements 
         int x = e.getX();
         int minX = Math.min(x, this.dragStartX);
         int maxX = Math.max(x, this.dragStartX);
-        LocalDateTime selectionStart = getDateFromCoordInPanel(minX, true);
-        LocalDateTime selectionEnd = getDateFromCoordInPanel(maxX, false);
+        LocalDateTime selectionStart = getDateFromCoordInPanel(minX);
+        LocalDateTime selectionEnd = getDateFromCoordInPanel(maxX);
         this.selectionVisualizer.setSelectionStart(selectionStart);
         this.selectionVisualizer.setSelectionEnd(selectionEnd);
 
@@ -113,10 +113,9 @@ public class SelectionChangeMouseListener extends MouseMotionAdapter implements 
     {
     }
 
-    private LocalDateTime getDateFromCoordInPanel(int x, boolean floor)
+    private LocalDateTime getDateFromCoordInPanel(int x)
     {
         float relX = this.visualizationPanel.toRelativeX(x);
-        double roundedX = floor ? Math.floor(relX) : Math.ceil(relX);
-        return UtilsKt.asEpochDays((int) roundedX, ZoneOffset.UTC);
+        return UtilsKt.asEpochDays(relX, ZoneOffset.UTC);
     }
 }
