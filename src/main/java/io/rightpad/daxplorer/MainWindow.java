@@ -235,6 +235,7 @@ public class MainWindow
     private void initMouseSpanYListeners()
     {
         ViewportSpanYChangeMouseListener viewportSpanYChangeMouseListener = new ViewportSpanYChangeMouseListener(this.visualizationPanel);
+        viewportSpanYChangeMouseListener.setOnScroll(this::updateViewportTextFields);
         this.visualizationPanel.addMouseWheelListener(viewportSpanYChangeMouseListener);
     }
 
