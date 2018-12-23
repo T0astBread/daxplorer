@@ -71,6 +71,16 @@ public class ChartPanel extends JPanel
         return getHeight() - (int) ((relY - this.position.getY()) * getHeightRelation());
     }
 
+    public float toRelativeX(int absX)
+    {
+        return absX / getWidthRelation() + this.position.getX();
+    }
+
+    public float toRelativeY(int absY)
+    {
+        return (getHeight() - absY) / getHeightRelation() + this.position.getY();
+    }
+
     public void addChart(Chart chart)
     {
         System.out.println("Adding chart " + chart);

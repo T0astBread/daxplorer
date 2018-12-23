@@ -53,6 +53,9 @@ public class SelectionChart implements Chart
     @Override
     public void draw(ChartPanel panel, Graphics2D g2d)
     {
+        if(!this.isSelected)
+            return;
+
         int startX = panel.toAbsoluteX(selectionStart);
         int endX = panel.toAbsoluteX(selectionEnd);
         int width = endX - startX;

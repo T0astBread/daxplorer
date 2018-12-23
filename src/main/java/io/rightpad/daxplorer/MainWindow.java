@@ -55,9 +55,9 @@ public class MainWindow
 
         this.defaultTextFieldBorder = this.selectionStartTextField.getBorder();
         initSelectionTextFieldListeners();
+        initMouseSelectionListeners();
 
         initTrendButtons();
-        setTrendButtonsEnabled(false);
 
         setSelectionStart(LocalDateTime.now().minusDays(6));
         setSelectionEnd(LocalDateTime.now().plusDays(1));
@@ -154,6 +154,19 @@ public class MainWindow
         this.upRadioButton.addActionListener(this::onTrendButtonClick);
         this.stallingRadioButton.addActionListener(this::onTrendButtonClick);
         this.downRadioButton.addActionListener(this::onTrendButtonClick);
+    }
+
+    private void initMouseSelectionListeners()
+    {
+        SelectionChangeMouseListener selectionChangeMouseListener = new SelectionChangeMouseListener(this.visualizationPanel, this.selectionVisualizer);
+        selectionChangeMouseListener.setOnMouseDrag(() -> {
+            setTrendButtonsEnabled(false);
+            updateSelectionTextFields();
+        });
+        selectionChangeMouseListener.setOnMouseRelease(this::updateSelection);
+
+        this.visualizationPanel.addMouseListener(selectionChangeMouseListener);
+        this.visualizationPanel.addMouseMotionListener(selectionChangeMouseListener);
     }
 
     public void show()

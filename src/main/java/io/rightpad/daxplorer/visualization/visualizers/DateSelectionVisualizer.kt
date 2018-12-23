@@ -9,12 +9,12 @@ class DateSelectionVisualizer : Visualizer("DateSelection") {
     var selectionStart: LocalDateTime? = null
         set(value) {
             field = value
-            updateIsSelected()
+            println("Setting selection start to $value")
         }
     var selectionEnd: LocalDateTime? = null
         set(value) {
             field = value
-            updateIsSelected()
+            println("Setting selection end to $value")
         }
 
     private val selectionChart = SelectionChart()
@@ -30,9 +30,5 @@ class DateSelectionVisualizer : Visualizer("DateSelection") {
         this.selectionChart.isSelected = true
         this.selectionChart.selectionStart = Math.max(this.selectionStart!!.daysSinceEpoch(), startTimestamp.daysSinceEpoch())
         this.selectionChart.selectionEnd = Math.min(this.selectionEnd!!.daysSinceEpoch(), endTimestamp.daysSinceEpoch())
-    }
-
-    private fun updateIsSelected() {
-        this.selectionChart.isSelected = this.selectionStart != null && this.selectionEnd != null
     }
 }
