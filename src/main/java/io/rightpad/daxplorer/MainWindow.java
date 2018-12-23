@@ -1,6 +1,7 @@
 package io.rightpad.daxplorer;
 
 import io.rightpad.daxplorer.data.IndexDataPoint;
+import io.rightpad.daxplorer.uxsugar.SelectionChangeMouseListener;
 import io.rightpad.daxplorer.visualization.PointF;
 import io.rightpad.daxplorer.visualization.VisualizationPanel;
 import io.rightpad.daxplorer.visualization.visualizers.DateSelectionVisualizer;
