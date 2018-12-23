@@ -6,8 +6,19 @@ import java.awt.*;
 
 public class SelectionChart implements Chart
 {
+    private boolean isSelected;
     private int selectionStart, selectionEnd;
     private Color color = new Color(93, 194, 81, 100);
+
+    public boolean isSelected()
+    {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected)
+    {
+        isSelected = selected;
+    }
 
     public int getSelectionStart()
     {

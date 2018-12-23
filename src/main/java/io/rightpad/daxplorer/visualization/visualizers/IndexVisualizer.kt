@@ -11,18 +11,17 @@ import java.awt.Color
 import java.time.LocalDateTime
 
 class IndexVisualizer: TimeSeriesVisualizer<IndexDataPoint>("Index") {
-    override val features: List<Feature<IndexDataPoint>>
-        get() = listOf(IndexFeature())
-    override val charts: List<Chart>
-        get() = listOf(this.lineChart)
-
     private val lineChart = LineChart()
 
+    override val features: List<Feature<IndexDataPoint>> = listOf(IndexFeature())
+    override val charts: List<Chart> = listOf(this.lineChart)
+
     override fun visualize(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
+        this.lineChart.clearPoints()
         this.features[0].featureData
-                .filter { dataPoint -> dataPoint.timestamp in startTimestamp..endTimestamp }
-                .sortedBy { dataPoint -> dataPoint.timestamp }
-                .forEach { dataPoint ->
+                ?.filter { dataPoint -> dataPoint.timestamp in startTimestamp..endTimestamp }
+                ?.sortedBy { dataPoint -> dataPoint.timestamp }
+                ?.forEach { dataPoint ->
                     this.lineChart.addPoint(
                             dataPoint.timestamp.daysSinceEpoch().toFloat(),
                             dataPoint.end,

@@ -6,13 +6,33 @@ import io.rightpad.daxplorer.visualization.charts.SelectionChart
 import java.time.LocalDateTime
 
 class DateSelectionVisualizer : Visualizer("DateSelection") {
+    var selectionStart: LocalDateTime? = null
+        set(value) {
+            field = value
+            updateIsSelected()
+        }
+    var selectionEnd: LocalDateTime? = null
+        set(value) {
+            field = value
+            updateIsSelected()
+        }
+
     private val selectionChart = SelectionChart()
 
     override val charts: List<Chart>
         get() = listOf(this.selectionChart)
 
     override fun visualize(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
-        this.selectionChart.selectionStart = startTimestamp.daysSinceEpoch()
-        this.selectionChart.selectionEnd = endTimestamp.daysSinceEpoch()
+        if(this.selectionStart == null || this.selectionEnd == null) {
+            this.selectionChart.isSelected = false
+            return
+        }
+        this.selectionChart.isSelected = true
+        this.selectionChart.selectionStart = Math.max(this.selectionStart!!.daysSinceEpoch(), startTimestamp.daysSinceEpoch())
+        this.selectionChart.selectionEnd = Math.min(this.selectionEnd!!.daysSinceEpoch(), endTimestamp.daysSinceEpoch())
+    }
+
+    private fun updateIsSelected() {
+        this.selectionChart.isSelected = this.selectionStart != null && this.selectionEnd != null
     }
 }

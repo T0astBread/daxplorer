@@ -3,6 +3,7 @@ package io.rightpad.daxplorer;
 import io.rightpad.daxplorer.data.IndexDataPoint;
 import io.rightpad.daxplorer.visualization.PointF;
 import io.rightpad.daxplorer.visualization.VisualizationPanel;
+import io.rightpad.daxplorer.visualization.charts.SelectionChart;
 import io.rightpad.daxplorer.visualization.visualizers.DateSelectionVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.IndexVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.Visualizer;
@@ -10,6 +11,7 @@ import io.rightpad.daxplorer.visualization.visualizers.Visualizer;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.time.LocalDate;
@@ -23,8 +25,8 @@ import java.util.stream.Collectors;
 
 public class MainWindow
 {
-    private static final byte NO_TREND_BUTTONS_VALUE = -2;
     private static final Border INVALID_INPUT_BORDER = BorderFactory.createLineBorder(Color.RED, 2);
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private JPanel mainPanel;
     private VisualizationPanel visualizationPanel;
@@ -41,7 +43,7 @@ public class MainWindow
     private DefaultListModel<Visualizer> visualizerListModel;
     private List<IndexDataPoint> indexData;
     private List<IndexDataPoint> selectedIndexData;
-    private LocalDateTime selectionStart, selectionEnd;
+    private DateSelectionVisualizer selectionVisualizer;
 
     public MainWindow()
     {
@@ -54,12 +56,20 @@ public class MainWindow
         this.defaultTextFieldBorder = this.selectionStartTextField.getBorder();
         initSelectionTextFieldListeners();
 
+        initTrendButtons();
         setTrendButtonsEnabled(false);
+
+        setSelectionStart(LocalDateTime.now().minusDays(6));
+        setSelectionEnd(LocalDateTime.now().plusDays(1));
+
+        this.visualizationPanel.visualize();
     }
 
     private void loadData()
     {
         this.indexData = new ArrayList<>();
+        this.visualizationPanel.setIndexData(this.indexData);
+
         this.indexData.add(new IndexDataPoint(
                 LocalDateTime.now().minusDays(1),
                 1000,
@@ -76,16 +86,30 @@ public class MainWindow
                 700,
                 1010,
                 130,
-                (byte) 1
+                (byte) -1
         ));
         this.indexData.add(new IndexDataPoint(
                 LocalDateTime.now().minusDays(3),
                 1000,
-                1200,
+                1600,
                 980,
                 1400,
                 230,
-                (byte) 1
+                (byte) 0
+        ));
+        this.indexData.add(new IndexDataPoint(
+                LocalDateTime.now().minusDays(4),
+                1600,
+                1600,
+                980,
+                1400,
+                230,
+                (byte) 0
+        ));
+
+        this.visualizationPanel.setPosition(new PointF(
+                UtilsKt.daysSinceEpoch(LocalDateTime.now().minusDays(5), ZoneOffset.UTC),
+                this.visualizationPanel.getPosition().getY()
         ));
     }
 
@@ -95,7 +119,8 @@ public class MainWindow
         this.visualizerList.setModel(this.visualizerListModel);
 
         addVisualizer(new IndexVisualizer());
-        addVisualizer(new DateSelectionVisualizer());
+        this.selectionVisualizer = new DateSelectionVisualizer();
+        addVisualizer(this.selectionVisualizer);
     }
 
     private void initSelectionTextFieldListeners()
@@ -122,6 +147,15 @@ public class MainWindow
         this.selectionEndTextField.addKeyListener(selectionTextFieldKeyListener);
     }
 
+    private void initTrendButtons()
+    {
+        setTrendButtonsEnabled(false);
+
+        this.upRadioButton.addActionListener(this::onTrendButtonClick);
+        this.stallingRadioButton.addActionListener(this::onTrendButtonClick);
+        this.downRadioButton.addActionListener(this::onTrendButtonClick);
+    }
+
     public void show()
     {
         JFrame frame = new JFrame("daxplorer");
@@ -143,7 +177,7 @@ public class MainWindow
         JTextField textField = (JTextField) e.getSource();
         try {
             String input = textField.getText();
-            LocalDateTime date = LocalDate.parse(input, DateTimeFormatter.ofPattern("dd.MM.yyyy")).atTime(0, 0);
+            LocalDateTime date = LocalDate.parse(input, DATE_FORMAT).atTime(0, 0);
             textField.setBorder(this.defaultTextFieldBorder);
 
             if(e.getSource() == this.selectionStartTextField)
@@ -156,48 +190,80 @@ public class MainWindow
         }
     }
 
+    private LocalDateTime getSelectionStart()
+    {
+        return this.selectionVisualizer.getSelectionStart();
+    }
+
     private void setSelectionStart(LocalDateTime selectionStart)
     {
-        this.selectionStart = selectionStart;
+        this.selectionVisualizer.setSelectionStart(selectionStart);
         updateSelection();
+    }
+
+    private LocalDateTime getSelectionEnd()
+    {
+        return this.selectionVisualizer.getSelectionEnd();
     }
 
     private void setSelectionEnd(LocalDateTime selectionEnd)
     {
-        this.selectionEnd = selectionEnd;
+        this.selectionVisualizer.setSelectionEnd(selectionEnd);
         updateSelection();
     }
 
     private void updateSelection()
     {
+        updateSelectionTextFields();
         updateSelectionList();
         updateTrendButtons();
-        updateVisualization();
+        this.visualizationPanel.visualize();
+    }
+
+    private void updateSelectionTextFields()
+    {
+        updateSelectionTextField(this.selectionStartTextField, getSelectionStart());
+        updateSelectionTextField(this.selectionEndTextField, getSelectionEnd());
+    }
+
+    private void updateSelectionTextField(JTextField textField, LocalDateTime selection)
+    {
+        if(selection == null)
+            return;
+
+        String text = textField.getText();
+        String selectionText = selection.format(DATE_FORMAT);
+
+        if(!text.equals(selectionText)) {
+            textField.setText(selectionText);
+        }
     }
 
     private void updateSelectionList()
     {
         this.selectedIndexData = null;
-        if(this.selectionStart == null || this.selectionEnd == null)
+        if(getSelectionStart() == null || getSelectionEnd() == null)
             return;
 
+        LocalDateTime selectionStart = getSelectionStart().plusDays(1),
+                selectionEnd = getSelectionEnd().plusDays(1);
         this.selectedIndexData = this.indexData.stream()
                 .filter(dataPoint ->
-                        dataPoint.getTimestamp().isAfter(this.selectionStart) &&
-                                dataPoint.getTimestamp().isBefore(this.selectionEnd)
+                        dataPoint.getTimestamp().isAfter(selectionStart) &&
+                                dataPoint.getTimestamp().isBefore(selectionEnd)
                 )
                 .collect(Collectors.toList());
     }
 
     private void updateTrendButtons()
     {
-        boolean selectionIsInvalid = this.selectionStart == null || this.selectionEnd == null;
+        boolean selectionIsInvalid = getSelectionStart() == null || getSelectionEnd() == null;
         setTrendButtonsEnabled(!selectionIsInvalid);
         if(selectionIsInvalid)
             return;
 
         List<Byte> distinctTrendsInSelection = this.selectedIndexData.stream()
-                .map(dataPoint -> dataPoint.getTrend())
+                .map(IndexDataPoint::getTrend)
                 .distinct()
                 .collect(Collectors.toList());
         boolean hasUniformTrend = distinctTrendsInSelection.size() == 1;
@@ -205,7 +271,7 @@ public class MainWindow
         if(hasUniformTrend)
             setTrendButtonsValue(distinctTrendsInSelection.get(0));
         else
-            setTrendButtonsValue(NO_TREND_BUTTONS_VALUE);
+            deselectAllTrendButtons();
     }
 
     private void setTrendButtonsEnabled(boolean enabled)
@@ -222,13 +288,28 @@ public class MainWindow
         this.upRadioButton.setSelected(trend == 1);
     }
 
-    private void updateVisualization()
+    private void deselectAllTrendButtons()
     {
-        int startDays = UtilsKt.daysSinceEpoch(this.selectionStart, ZoneOffset.UTC);
-        int endDays = UtilsKt.daysSinceEpoch(this.selectionEnd, ZoneOffset.UTC);
-        int span = endDays - startDays;
-        this.visualizationPanel.setPosition(new PointF(startDays, this.visualizationPanel.getPosition().getY()));
-        this.visualizationPanel.setChartWidth(span);
+        ((DefaultButtonModel) this.downRadioButton.getModel()).getGroup().clearSelection();
+    }
+
+    private void onTrendButtonClick(ActionEvent e)
+    {
+        if(this.selectedIndexData == null)
+            return;
+
+        byte newTrendValue = 0; // stalling by default
+        if(e.getSource() == this.upRadioButton)
+            newTrendValue = 1;
+        else if(e.getSource() == this.downRadioButton)
+            newTrendValue = -1;
+        final byte _newTrendValue = newTrendValue; // thanks Java
+
+        this.selectedIndexData.forEach(dataPoint -> {
+            dataPoint.setTrend(_newTrendValue);
+        });
+
+        this.visualizationPanel.visualize();
     }
 
     {

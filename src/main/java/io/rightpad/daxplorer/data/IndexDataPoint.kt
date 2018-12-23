@@ -9,5 +9,5 @@ class IndexDataPoint(
         val min: Float,
         val max: Float,
         val volume: Int,
-        val trend: Byte
+        var trend: Byte
 ) : TimeSeriesDataPoint(timestamp)

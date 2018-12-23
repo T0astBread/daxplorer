@@ -63,7 +63,7 @@ public class ChartPanel extends JPanel
 
     public int toAbsoluteX(float relX)
     {
-        return (int) ((relX + this.position.getX()) * getWidthRelation());
+        return (int) ((relX - this.position.getX()) * getWidthRelation());
     }
 
     public int toAbsoluteY(float relY)
