@@ -56,6 +56,14 @@ public class VisualizationPanel extends ChartPanel
         visualize();
     }
 
+    public void setTimeOffset(LocalDateTime offset)
+    {
+        setPosition(new PointF(
+                UtilsKt.daysSinceEpoch(offset, ZoneOffset.UTC),
+                getPosition().getY()
+        ));
+    }
+
     public void visualize()
     {
         visualize(getPosition().getX(), getPosition().getX() + getChartWidth());

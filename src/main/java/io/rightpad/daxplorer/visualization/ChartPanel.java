@@ -27,6 +27,11 @@ public class ChartPanel extends JPanel
         repaint();
     }
 
+    public void setPositionY(float posY)
+    {
+        setPosition(new PointF(getPosition().getX(), posY));
+    }
+
     public float getChartWidth()
     {
         return chartWidth;

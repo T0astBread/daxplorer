@@ -3,7 +3,6 @@ package io.rightpad.daxplorer;
 import io.rightpad.daxplorer.data.IndexDataPoint;
 import io.rightpad.daxplorer.visualization.PointF;
 import io.rightpad.daxplorer.visualization.VisualizationPanel;
-import io.rightpad.daxplorer.visualization.charts.SelectionChart;
 import io.rightpad.daxplorer.visualization.visualizers.DateSelectionVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.IndexVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.Visualizer;
@@ -12,6 +11,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.time.LocalDate;
@@ -21,11 +21,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MainWindow
 {
-    private static final Border INVALID_INPUT_BORDER = BorderFactory.createLineBorder(Color.RED, 2);
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private JPanel mainPanel;
@@ -36,8 +36,10 @@ public class MainWindow
     private JRadioButton downRadioButton;
     private JRadioButton stallingRadioButton;
     private JRadioButton upRadioButton;
-    private JTextField textField1;
-    private JTextField textField2;
+    private JTextField viewportSpanXTextField;
+    private JTextField viewportOffsetXTextField;
+    private JTextField viewportSpanYTextField;
+    private JTextField viewportOffsetYTextField;
 
     private Border defaultTextFieldBorder;
     private DefaultListModel<Visualizer> visualizerListModel;
@@ -54,10 +56,13 @@ public class MainWindow
         this.visualizationPanel.setChartHeight(2000);
 
         this.defaultTextFieldBorder = this.selectionStartTextField.getBorder();
+
         initSelectionTextFieldListeners();
         initMouseSelectionListeners();
 
         initTrendButtons();
+
+        initViewPortTextFieldListeners();
 
         setSelectionStart(LocalDateTime.now().minusDays(6));
         setSelectionEnd(LocalDateTime.now().plusDays(1));
@@ -169,6 +174,38 @@ public class MainWindow
         this.visualizationPanel.addMouseMotionListener(selectionChangeMouseListener);
     }
 
+    private void initViewPortTextFieldListeners()
+    {
+        this.viewportSpanXTextField.addActionListener(viewportSpanTextFieldListener(
+                this.viewportSpanXTextField,
+                this.visualizationPanel::setChartWidth
+        ));
+        this.viewportSpanYTextField.addActionListener(viewportSpanTextFieldListener(
+                this.viewportSpanYTextField,
+                this.visualizationPanel::setChartHeight
+        ));
+
+        this.viewportOffsetXTextField.addActionListener(SwingUtils.validatedListener(
+                this.viewportOffsetXTextField,
+                (textField, actionEvent) -> {
+                    LocalDateTime offset = LocalDate.parse(textField.getText(), DATE_FORMAT).atTime(0, 0);
+                    this.visualizationPanel.setTimeOffset(offset);
+                }
+        ));
+        this.viewportOffsetYTextField.addActionListener(SwingUtils.validatedListener(
+                this.viewportOffsetYTextField,
+                (textField, actionEvent) ->
+                        this.visualizationPanel.setPositionY(Float.parseFloat(textField.getText()))
+        ));
+    }
+
+    private ActionListener viewportSpanTextFieldListener(JTextField textField, Consumer<Integer> setter)
+    {
+        return SwingUtils.validatedListener(textField, (textField1, actionEvent) ->
+                setter.accept(Integer.parseInt(textField1.getText()))
+        );
+    }
+
     public void show()
     {
         JFrame frame = new JFrame("daxplorer");
@@ -199,7 +236,7 @@ public class MainWindow
                 setSelectionEnd(date);
         }
         catch(DateTimeParseException parseException) {
-            textField.setBorder(INVALID_INPUT_BORDER);
+            textField.setBorder(SwingUtils.INVALID_INPUT_BORDER);
         }
     }
 
@@ -379,15 +416,15 @@ public class MainWindow
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel1.add(spacer1, gbc);
-        textField1 = new JTextField();
-        textField1.setColumns(5);
+        viewportSpanXTextField = new JTextField();
+        viewportSpanXTextField.setColumns(5);
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.ipadx = 50;
-        panel1.add(textField1, gbc);
+        panel1.add(viewportSpanXTextField, gbc);
         final JLabel label2 = new JLabel();
         label2.setText("Offset X");
         gbc = new GridBagConstraints();
@@ -395,14 +432,14 @@ public class MainWindow
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
         panel1.add(label2, gbc);
-        textField2 = new JTextField();
+        viewportOffsetXTextField = new JTextField();
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel1.add(textField2, gbc);
+        panel1.add(viewportOffsetXTextField, gbc);
         final JLabel label3 = new JLabel();
         label3.setText("Span Y");
         gbc = new GridBagConstraints();
@@ -417,23 +454,23 @@ public class MainWindow
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.WEST;
         panel1.add(label4, gbc);
-        final JTextField textField3 = new JTextField();
-        textField3.setColumns(5);
+        viewportSpanYTextField = new JTextField();
+        viewportSpanYTextField.setColumns(5);
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.ipadx = 50;
-        panel1.add(textField3, gbc);
-        final JTextField textField4 = new JTextField();
+        panel1.add(viewportSpanYTextField, gbc);
+        viewportOffsetYTextField = new JTextField();
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel1.add(textField4, gbc);
+        panel1.add(viewportOffsetYTextField, gbc);
         final JLabel label5 = new JLabel();
         label5.setText("days");
         gbc = new GridBagConstraints();
