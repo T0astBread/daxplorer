@@ -228,6 +228,7 @@ public class MainWindow
     private void initMouseOffsetListeners()
     {
         ViewportOffsetChangeMouseListener viewportOffsetChangeMouseListener = new ViewportOffsetChangeMouseListener(this.visualizationPanel);
+        viewportOffsetChangeMouseListener.setOnDrag(this::updateViewportTextFields);
         this.visualizationPanel.addMouseMotionListener(viewportOffsetChangeMouseListener);
         this.visualizationPanel.addMouseListener(viewportOffsetChangeMouseListener);
     }

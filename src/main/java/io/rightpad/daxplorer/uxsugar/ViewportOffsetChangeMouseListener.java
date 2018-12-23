@@ -11,15 +11,25 @@ public class ViewportOffsetChangeMouseListener extends MouseMotionAdapter implem
 {
     private static final int OFFSET_DRAG_MOUSE_BUTTON = MouseEvent.BUTTON2;
     private static final int OFFSET_DRAG_MOUSE_MODIFIER = MouseEvent.BUTTON2_DOWN_MASK;
-    private static final int NO_PREVIOUS_DRAG = -1;
 
     private VisualizationPanel visualizationPanel;
+    private Runnable onDrag;
 
     private float dragStartPosX;
 
     public ViewportOffsetChangeMouseListener(VisualizationPanel visualizationPanel)
     {
         this.visualizationPanel = visualizationPanel;
+    }
+
+    public Runnable getOnDrag()
+    {
+        return onDrag;
+    }
+
+    public void setOnDrag(Runnable onDrag)
+    {
+        this.onDrag = onDrag;
     }
 
     @Override
@@ -33,6 +43,9 @@ public class ViewportOffsetChangeMouseListener extends MouseMotionAdapter implem
                 this.dragStartPosX - relX,
                 this.visualizationPanel.getPosition().getY()
         ));
+
+        if(this.onDrag != null)
+            this.onDrag.run();
     }
 
     @Override
