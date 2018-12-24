@@ -1,4 +1,4 @@
-package io.rightpad.daxplorer;
+package io.rightpad.daxplorer.utils;
 
 import javax.swing.*;
 import javax.swing.border.Border;

@@ -1,6 +1,6 @@
 package io.rightpad.daxplorer.uxsugar;
 
-import io.rightpad.daxplorer.UtilsKt;
+import io.rightpad.daxplorer.utils.UtilsKt;
 import io.rightpad.daxplorer.visualization.VisualizationPanel;
 import io.rightpad.daxplorer.visualization.visualizers.DateSelectionVisualizer;
 

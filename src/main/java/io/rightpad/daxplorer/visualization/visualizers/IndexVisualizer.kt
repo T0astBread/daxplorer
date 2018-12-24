@@ -3,8 +3,7 @@ package io.rightpad.daxplorer.visualization.visualizers
 import io.rightpad.daxplorer.data.IndexDataPoint
 import io.rightpad.daxplorer.data.features.Feature
 import io.rightpad.daxplorer.data.features.IndexFeature
-import io.rightpad.daxplorer.daysSinceEpoch
-import io.rightpad.daxplorer.visualization.PointF
+import io.rightpad.daxplorer.utils.daysSinceEpoch
 import io.rightpad.daxplorer.visualization.charts.Chart
 import io.rightpad.daxplorer.visualization.charts.LineChart
 import java.awt.Color

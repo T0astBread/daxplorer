@@ -1,6 +1,6 @@
 package io.rightpad.daxplorer.visualization.visualizers
 
-import io.rightpad.daxplorer.daysSinceEpoch
+import io.rightpad.daxplorer.utils.daysSinceEpoch
 import io.rightpad.daxplorer.visualization.charts.Chart
 import io.rightpad.daxplorer.visualization.charts.SelectionChart
 import java.time.LocalDateTime

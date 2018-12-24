@@ -1,4 +1,4 @@
-package io.rightpad.daxplorer;
+package io.rightpad.daxplorer.charts;
 
 import io.rightpad.daxplorer.visualization.charts.LineChart;
 import org.junit.Test;
