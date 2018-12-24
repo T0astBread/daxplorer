@@ -11,6 +11,7 @@ public class ChartPanel extends JPanel
 {
     private PointF position = new PointF(0, 0);
     private float chartWidth = 100, chartHeight = 100;
+    private float stepWidthX;
 
     private List<ChartEntry> charts = new LinkedList<>();
 
@@ -41,7 +42,25 @@ public class ChartPanel extends JPanel
     {
         System.out.println("Changing chart width from " + this.chartWidth + " to " + chartWidth);
         this.chartWidth = chartWidth;
+        updateStepWidthX();
         repaint();
+    }
+
+    private void updateStepWidthX()
+    {
+        this.stepWidthX = calcStepWidthX();
+    }
+
+    private float calcStepWidthX()
+    {
+        double width = 0;
+        for(int i = -10; i < 10; i++) {
+            double w = Math.pow(10, i);
+            if(this.chartWidth - w < 0)
+                break;
+            width = w;
+        }
+        return (float) width;
     }
 
     public float getChartHeight()
@@ -157,11 +176,11 @@ public class ChartPanel extends JPanel
 
     private void drawXStepLines(Graphics2D g2d)
     {
-        float stepWidth = 1;
-        int start = (int) (this.position.getX() / stepWidth);
-        int end = (int) ((this.position.getX() + this.chartWidth) / stepWidth) + 1;
-        for(int i = start; i < end; i++) {
-            int relStepLineX = (int) (i * stepWidth);
+        float stepWidth = this.stepWidthX;
+        float start = this.position.getX() / stepWidth;
+        float end = (this.position.getX() + this.chartWidth) / stepWidth + 1;
+        for(int i = (int) start; i < end; i++) {
+            float relStepLineX = i * stepWidth;
             int stepLineX = toAbsoluteX(relStepLineX);
             g2d.drawLine(stepLineX, getHeight() - 10, stepLineX, getHeight() - 20);
             g2d.drawString("" + relStepLineX, stepLineX - 5, getHeight());
