@@ -45,9 +45,9 @@ class IndexVisualizer: TimeSeriesVisualizer<IndexDataPoint>("Index") {
                             dataPoint.max,
                             trendColor,
                             if(dataPoint.start > dataPoint.end)
-                                BULLISH_STICK_COLOR
-                            else
                                 BEARISH_STICK_COLOR
+                            else
+                                BULLISH_STICK_COLOR
                     ))
                 }
     }
