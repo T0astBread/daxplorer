@@ -1,6 +1,7 @@
 package io.rightpad.daxplorer;
 
 import io.rightpad.daxplorer.data.IndexDataPoint;
+import io.rightpad.daxplorer.data.TimeSeriesDataPoint;
 import io.rightpad.daxplorer.data.serialization.CsvKt;
 import io.rightpad.daxplorer.utils.FileIO;
 import io.rightpad.daxplorer.utils.SwingUtils;
@@ -90,6 +91,30 @@ public class MainWindow
     {
         this.indexData = indexData;
         this.visualizationPanel.setIndexData(indexData);
+
+        adjustViewportSettings();
+    }
+
+    private void adjustViewportSettings()
+    {
+        float minValue = this.indexData.stream()
+                .map(IndexDataPoint::getMin)
+                .min(Float::compareTo)
+                .orElse(0f);
+        float maxValue = this.indexData.stream()
+                .map(IndexDataPoint::getMax)
+                .max(Float::compareTo)
+                .orElse(0f);
+        float range = maxValue - minValue;
+        float padding = range * .1f;
+        this.visualizationPanel.setChartHeight(range + 2 * padding);
+        this.visualizationPanel.setPosition(new PointF(0, minValue - padding));
+
+        LocalDateTime firstDataPoint = this.indexData.stream()
+                .map(TimeSeriesDataPoint::getTimestamp)
+                .min(LocalDateTime::compareTo)
+                .orElseGet(LocalDateTime::now);
+        this.visualizationPanel.setTimeOffset(firstDataPoint);
     }
 
     private void initFileIO()
