@@ -1,8 +1,11 @@
-package io.rightpad.daxplorer
+package io.rightpad.daxplorer.utils
 
+import java.io.File
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.util.stream.Stream
 import kotlin.math.floor
+import kotlin.streams.asStream
 
 fun LocalDateTime.daysSinceEpoch(zoneOffset: ZoneOffset = ZoneOffset.UTC): Float =
         this.toEpochSecond(zoneOffset) / 60f / 60 / 24
@@ -19,3 +22,6 @@ fun LocalDateTime?.floor() =
 
 fun LocalDateTime?.ceil() =
         this?.toLocalDate()?.plusDays(1)?.atStartOfDay()
+
+fun <T> File.useLinesAsStream(consume: (Stream<String>) -> T): T =
+        useLines { consume(it.asStream()) }

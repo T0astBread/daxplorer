@@ -10,4 +10,29 @@ class IndexDataPoint(
         val max: Float,
         val volume: Int,
         var trend: Byte
-) : TimeSeriesDataPoint(timestamp)
+) : TimeSeriesDataPoint(timestamp) {
+
+    override fun equals(other: Any?): Boolean {
+        if(this === other) return true
+        if(other !is IndexDataPoint) return false
+
+        if(start != other.start) return false
+        if(end != other.end) return false
+        if(min != other.min) return false
+        if(max != other.max) return false
+        if(volume != other.volume) return false
+        if(trend != other.trend) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = start.hashCode()
+        result = 31 * result + end.hashCode()
+        result = 31 * result + min.hashCode()
+        result = 31 * result + max.hashCode()
+        result = 31 * result + volume
+        result = 31 * result + trend
+        return result
+    }
+}

@@ -1,6 +1,10 @@
 package io.rightpad.daxplorer;
 
 import io.rightpad.daxplorer.data.IndexDataPoint;
+import io.rightpad.daxplorer.data.serialization.CsvKt;
+import io.rightpad.daxplorer.utils.FileIO;
+import io.rightpad.daxplorer.utils.SwingUtils;
+import io.rightpad.daxplorer.utils.UtilsKt;
 import io.rightpad.daxplorer.uxsugar.SelectionChangeMouseListener;
 import io.rightpad.daxplorer.uxsugar.ViewportOffsetChangeMouseListener;
 import io.rightpad.daxplorer.uxsugar.ViewportSpanYChangeMouseListener;
@@ -9,14 +13,12 @@ import io.rightpad.daxplorer.visualization.VisualizationPanel;
 import io.rightpad.daxplorer.visualization.visualizers.DateSelectionVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.IndexVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.Visualizer;
+import kotlin.jvm.functions.Function0;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -44,15 +46,25 @@ public class MainWindow
     private JTextField viewportSpanYTextField;
     private JTextField viewportOffsetYTextField;
 
+    private JFrame frame;
+    private JMenuBar menuBar;
+    private JMenuItem[] fileDependentMenuItems;
     private Border defaultTextFieldBorder;
     private DefaultListModel<Visualizer> visualizerListModel;
     private List<IndexDataPoint> indexData;
     private List<IndexDataPoint> selectedIndexData;
     private DateSelectionVisualizer selectionVisualizer;
 
+    private FileIO fileIO;
+
     public MainWindow()
     {
-        loadData();
+        setIndexData(new ArrayList<>(0));
+
+        initFileIO();
+        initMenuBar();
+
+        updateFileDependentControls();
 
         initVisualizerList();
         this.visualizationPanel.setChartWidth(25);
@@ -71,58 +83,139 @@ public class MainWindow
 
         initMouseSpanYListeners();
 
-        setSelectionStart(LocalDateTime.now().minusDays(6));
-        setSelectionEnd(LocalDateTime.now().plusDays(1));
-
         this.visualizationPanel.visualize();
+    }
+
+    private void setIndexData(List<IndexDataPoint> indexData)
+    {
+        this.indexData = indexData;
+        this.visualizationPanel.setIndexData(indexData);
+    }
+
+    private void initFileIO()
+    {
+        Function0<String> chooseFile = () -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int response = fileChooser.showOpenDialog(this.mainPanel);
+            switch(response) {
+                case JFileChooser.CANCEL_OPTION:
+                    return null;
+                case JFileChooser.APPROVE_OPTION:
+                    return fileChooser.getSelectedFile().getAbsolutePath();
+            }
+            return null;
+        };
+
+        Function0<Boolean> shouldSaveUnsavedChanges = () -> {
+            int response = JOptionPane.showConfirmDialog(
+                    this.mainPanel,
+                    "There are unsaved changes! Save before quitting?",
+                    "Unsaved changes",
+                    JOptionPane.YES_NO_CANCEL_OPTION
+            );
+            switch(response) {
+                case JOptionPane.YES_OPTION:
+                    return true;
+                case JOptionPane.NO_OPTION:
+                    return false;
+            }
+            return null;
+        };
+
+        this.fileIO = new FileIO(chooseFile, shouldSaveUnsavedChanges, CsvKt.getCsvCollector());
     }
 
     private void loadData()
     {
-        this.indexData = new ArrayList<>();
-        this.visualizationPanel.setIndexData(this.indexData);
+        if(this.fileIO.getOpenFile() == null)
+            return;
 
-        this.indexData.add(new IndexDataPoint(
-                LocalDateTime.now().minusDays(1),
-                1000,
-                1200,
-                980,
-                1400,
-                230,
-                (byte) 1
-        ));
-        this.indexData.add(new IndexDataPoint(
-                LocalDateTime.now().minusDays(2),
-                700,
-                1000,
-                700,
-                1010,
-                130,
-                (byte) -1
-        ));
-        this.indexData.add(new IndexDataPoint(
-                LocalDateTime.now().minusDays(3),
-                1000,
-                1600,
-                980,
-                1400,
-                230,
-                (byte) 0
-        ));
-        this.indexData.add(new IndexDataPoint(
-                LocalDateTime.now().minusDays(4),
-                1600,
-                1600,
-                980,
-                1400,
-                230,
-                (byte) 0
+        setIndexData(UtilsKt.useLinesAsStream(this.fileIO.getOpenFile(),
+                lines -> lines
+                        .map(CsvKt::fromCSVToIndexDataPoint)
+                        .collect(Collectors.toList())
         ));
 
-        this.visualizationPanel.setPosition(new PointF(
-                UtilsKt.daysSinceEpoch(LocalDateTime.now().minusDays(5), ZoneOffset.UTC),
-                this.visualizationPanel.getPosition().getY()
-        ));
+        updateFileDependentStuff();
+    }
+
+    private void updateFileDependentStuff()
+    {
+        updateMenuItems();
+        clearControlsState();
+        updateFileDependentControls();
+    }
+
+    private void updateFileDependentControls()
+    {
+        boolean fileIsLoaded = this.fileIO.getOpenFile() != null;
+        if(!fileIsLoaded)
+            setTrendButtonsEnabled(false);
+        for(JComponent control : new JComponent[]{
+                this.viewportSpanXTextField,
+                this.viewportSpanYTextField,
+                this.viewportOffsetXTextField,
+                this.viewportOffsetYTextField,
+                this.selectionStartTextField,
+                this.selectionEndTextField
+        }) {
+            control.setEnabled(fileIsLoaded);
+        }
+    }
+
+    private void clearControlsState()
+    {
+        this.setSelectionStart(null);
+        this.setSelectionEnd(null);
+        deselectAllTrendButtons();
+    }
+
+    private void updateMenuItems()
+    {
+        for(JMenuItem fileDependentMenuItem : this.fileDependentMenuItems) {
+            fileDependentMenuItem.setEnabled(this.fileIO.getOpenFile() != null);
+        }
+    }
+
+    private void initMenuBar()
+    {
+        this.menuBar = new JMenuBar();
+
+        JMenu fileMenu = new JMenu("File");
+        this.menuBar.add(fileMenu);
+
+        JMenuItem openFileMenuItem = new JMenuItem("Open...");
+        openFileMenuItem.addActionListener(e -> {
+            this.fileIO.open();
+            loadData();
+        });
+        fileMenu.add(openFileMenuItem);
+
+        fileMenu.addSeparator();
+
+        JMenuItem saveFileMenuItem = new JMenuItem("Save");
+        saveFileMenuItem.addActionListener(e -> this.fileIO.save(this.indexData));
+        fileMenu.add(saveFileMenuItem);
+        saveFileMenuItem.setEnabled(false);
+
+        JMenuItem saveFileAsMenuItem = new JMenuItem("Save as...");
+        saveFileAsMenuItem.addActionListener(e -> this.fileIO.saveAs(this.indexData));
+        fileMenu.add(saveFileAsMenuItem);
+        saveFileAsMenuItem.setEnabled(false);
+
+        fileMenu.addSeparator();
+
+        JMenuItem closeMenuItem = new JMenuItem("Close");
+        closeMenuItem.addActionListener(e -> {
+            if(this.fileIO.canClose(this.indexData))
+                this.frame.dispose();
+        });
+        fileMenu.add(closeMenuItem);
+
+        this.fileDependentMenuItems = new JMenuItem[]{
+                saveFileMenuItem,
+                saveFileAsMenuItem
+        };
     }
 
     private void initVisualizerList()
@@ -242,12 +335,27 @@ public class MainWindow
 
     public void show()
     {
-        JFrame frame = new JFrame("daxplorer");
-        frame.setPreferredSize(new Dimension(1000, 600));
-        frame.setContentPane(new MainWindow().mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+        this.frame = new JFrame("daxplorer");
+        initWindowClosingInterceptor();
+        this.frame.setPreferredSize(new Dimension(1000, 600));
+        this.frame.setContentPane(this.mainPanel);
+        this.frame.setJMenuBar(this.menuBar);
+        this.frame.pack();
+        this.frame.setVisible(true);
+    }
+
+    private void initWindowClosingInterceptor()
+    {
+        this.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.frame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                if(fileIO.canClose(indexData))
+                    frame.dispose();
+            }
+        });
     }
 
     private void addVisualizer(Visualizer visualizer)
@@ -391,6 +499,7 @@ public class MainWindow
 
         this.selectedIndexData.forEach(dataPoint -> {
             dataPoint.setTrend(_newTrendValue);
+            this.fileIO.markAsChanged();
         });
 
         this.visualizationPanel.visualize();

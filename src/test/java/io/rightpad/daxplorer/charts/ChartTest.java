@@ -1,5 +1,6 @@
-package io.rightpad.daxplorer;
+package io.rightpad.daxplorer.charts;
 
+import io.rightpad.daxplorer.TestWindow;
 import io.rightpad.daxplorer.visualization.ChartPanel;
 import io.rightpad.daxplorer.visualization.charts.Chart;
 
