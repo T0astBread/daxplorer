@@ -1,7 +1,6 @@
 package io.rightpad.daxplorer.visualization;
 
 import io.rightpad.daxplorer.visualization.charts.Chart;
-import kotlin.jvm.functions.Function0;
 
 import javax.swing.*;
 import java.awt.*;
@@ -143,7 +142,9 @@ public class ChartPanel extends JPanel
     }
 
     private static final Color AXIS_COLOR = Color.DARK_GRAY;
-    private static final Stroke AXIS_STROKE = new BasicStroke(2);
+    private static final int AXIS_MAIN_LINE_STROKE_WIDTH = 3;
+    private static final Stroke AXIS_MAIN_LINE_STROKE = new BasicStroke(AXIS_MAIN_LINE_STROKE_WIDTH);
+    private static final Stroke AXIS_STEP_LINES_STROKE = new BasicStroke(2);
 
     @Override
     protected void paintComponent(Graphics g)
@@ -164,8 +165,11 @@ public class ChartPanel extends JPanel
     private void drawYAxis(Graphics2D g2d)
     {
         g2d.setColor(AXIS_COLOR);
-        g2d.setStroke(AXIS_STROKE);
-        g2d.drawLine(10, 0, 10, getHeight());
+        g2d.setStroke(AXIS_MAIN_LINE_STROKE);
+        int x = AXIS_MAIN_LINE_STROKE_WIDTH / 2;
+        g2d.drawLine(x, 0, x, getHeight());
+
+        g2d.setStroke(AXIS_STEP_LINES_STROKE);
         drawYStepLines(g2d);
     }
 
@@ -177,18 +181,19 @@ public class ChartPanel extends JPanel
         for(int i = start; i < end; i++) {
             int relStepLineY = (int) (i * stepWidth);
             int stepLineY = toAbsoluteY(relStepLineY);
-            g2d.drawLine(5, stepLineY, 15, stepLineY);
-            g2d.drawString("" + relStepLineY, 20, stepLineY);
+            g2d.drawLine(0, stepLineY, 10, stepLineY);
+            g2d.drawString(Float.toString(relStepLineY), 15, stepLineY + 4);
         }
     }
 
     private void drawXAxis(Graphics2D g2d)
     {
         int xAxisYCoord = getHeight() - 15;
-        g2d.setStroke(AXIS_STROKE);
+        g2d.setStroke(AXIS_MAIN_LINE_STROKE);
         g2d.setColor(AXIS_COLOR);
         g2d.drawLine(0, xAxisYCoord, getWidth(), xAxisYCoord);
 
+        g2d.setStroke(AXIS_STEP_LINES_STROKE);
         drawXStepLines(g2d);
     }
 
