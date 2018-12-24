@@ -28,6 +28,11 @@ public class LineChart implements Chart
         sortPoints();
     }
 
+    public void clearPoints()
+    {
+        this.points.clear();
+    }
+
     private void sortPoints()
     {
         this.points.sort((a, b) -> Float.compare(a.getX(), b.getX()));

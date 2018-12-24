@@ -26,3 +26,10 @@ compileTestKotlin {
 }
 
 mainClassName = 'io.rightpad.daxplorer.Main'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.rightpad.daxplorer.Main'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}

@@ -27,12 +27,17 @@ public class ChartPanel extends JPanel
         repaint();
     }
 
+    public void setPositionY(float posY)
+    {
+        setPosition(new PointF(getPosition().getX(), posY));
+    }
+
     public float getChartWidth()
     {
         return chartWidth;
     }
 
-    public void setChartWidth(int chartWidth)
+    public void setChartWidth(float chartWidth)
     {
         System.out.println("Changing chart width from " + this.chartWidth + " to " + chartWidth);
         this.chartWidth = chartWidth;
@@ -44,7 +49,7 @@ public class ChartPanel extends JPanel
         return chartHeight;
     }
 
-    public void setChartHeight(int chartHeight)
+    public void setChartHeight(float chartHeight)
     {
         System.out.println("Changing chart height from " + this.chartHeight + " to " + chartHeight);
         this.chartHeight = chartHeight;
@@ -63,12 +68,22 @@ public class ChartPanel extends JPanel
 
     public int toAbsoluteX(float relX)
     {
-        return (int) ((relX + this.position.getX()) * getWidthRelation());
+        return (int) ((relX - this.position.getX()) * getWidthRelation());
     }
 
     public int toAbsoluteY(float relY)
     {
         return getHeight() - (int) ((relY - this.position.getY()) * getHeightRelation());
+    }
+
+    public float toRelativeX(int absX)
+    {
+        return absX / getWidthRelation() + this.position.getX();
+    }
+
+    public float toRelativeY(int absY)
+    {
+        return (getHeight() - absY) / getHeightRelation() + this.position.getY();
     }
 
     public void addChart(Chart chart)
