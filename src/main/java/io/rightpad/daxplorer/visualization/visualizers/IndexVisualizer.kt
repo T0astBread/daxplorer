@@ -22,7 +22,7 @@ class IndexVisualizer: TimeSeriesVisualizer<IndexDataPoint>("Index") {
                 ?.sortedBy { dataPoint -> dataPoint.timestamp }
                 ?.forEach { dataPoint ->
                     this.lineChart.addPoint(
-                            dataPoint.timestamp.daysSinceEpoch().toFloat(),
+                            dataPoint.timestamp.daysSinceEpoch(),
                             dataPoint.end,
                             when(dataPoint.trend) {
                                 (-1).toByte() -> Color.RED

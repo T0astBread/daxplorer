@@ -20,7 +20,11 @@ public class VisualizationPanel extends ChartPanel
 
     public VisualizationPanel()
     {
-        setXAxisLabelConverter(x -> UtilsKt.asEpochDays(x, ZoneOffset.UTC).format(ConstKt.getDATE_FORMAT()));
+        setXAxisLabelConverter(x ->
+                UtilsKt.asEpochDays(x, ZoneOffset.UTC)
+                        .plusDays(1) // needed, so that the step line marks the start of the next day, not the end of the previous
+                        .format(ConstKt.getDATE_FORMAT())
+        );
     }
 
     public void addVisualizers(Visualizer... visualizers)

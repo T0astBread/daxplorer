@@ -26,6 +26,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -304,7 +305,10 @@ public class MainWindow
 
         int posX = (int) Math.floor(this.visualizationPanel.getPosition().getX());
         LocalDateTime dateOffset = UtilsKt.asEpochDays(posX, ZoneOffset.UTC);
-        this.viewportOffsetXTextField.setText(dateOffset.format(ConstKt.getDATE_FORMAT()));
+        this.viewportOffsetXTextField.setText(dateOffset
+                .plusDays(1) // needed, so that it displays the start of the next day, not the end of the previous
+                .format(ConstKt.getDATE_FORMAT())
+        );
 
         this.viewportOffsetYTextField.setText(Float.toString(this.visualizationPanel.getPosition().getY()));
     }
@@ -323,7 +327,9 @@ public class MainWindow
         this.viewportOffsetXTextField.addActionListener(SwingUtils.validatedListener(
                 this.viewportOffsetXTextField,
                 (textField, actionEvent) -> {
-                    LocalDateTime offset = LocalDate.parse(textField.getText(), ConstKt.getDATE_FORMAT()).atTime(0, 0);
+                    LocalDateTime offset = LocalDate.parse(textField.getText(), ConstKt.getDATE_FORMAT())
+                            .atTime(0, 0)
+                            .minusDays(1); // needed, so that it displays the start of the next day, not the end of the previous
                     this.visualizationPanel.setTimeOffset(offset);
                 }
         ));
@@ -392,7 +398,7 @@ public class MainWindow
         JTextField textField = (JTextField) e.getSource();
         try {
             String input = textField.getText();
-            LocalDateTime date = LocalDate.parse(input, ConstKt.getDATE_FORMAT()).atTime(0, 0);
+            LocalDateTime date = LocalDate.parse(input, ConstKt.getDATE_FORMAT()).atTime(0, 0).minusDays(2);
             textField.setBorder(this.defaultTextFieldBorder);
 
             if(e.getSource() == this.selectionStartTextField)
@@ -429,16 +435,19 @@ public class MainWindow
 
     private void updateSelection()
     {
-        updateSelectionTextFields();
         updateSelectionList();
+        updateSelectionTextFields();
         updateTrendButtons();
         this.visualizationPanel.visualize();
     }
 
     private void updateSelectionTextFields()
     {
-        updateSelectionTextField(this.selectionStartTextField, UtilsKt.floor(getSelectionStart()));
-        updateSelectionTextField(this.selectionEndTextField, UtilsKt.ceil(getSelectionEnd()));
+        if(this.selectedIndexData == null)
+            return;
+
+        updateSelectionTextField(this.selectionStartTextField, this.selectedIndexData.get(0).getTimestamp());
+        updateSelectionTextField(this.selectionEndTextField, this.selectedIndexData.get(this.selectedIndexData.size() - 1).getTimestamp().plusDays(1));
     }
 
     private void updateSelectionTextField(JTextField textField, LocalDateTime selection)
@@ -460,14 +469,20 @@ public class MainWindow
         if(getSelectionStart() == null || getSelectionEnd() == null)
             return;
 
-        LocalDateTime selectionStart = UtilsKt.floor(getSelectionStart()),
-                selectionEnd = UtilsKt.ceil(getSelectionEnd());
-        this.selectedIndexData = this.indexData.stream()
-                .filter(dataPoint ->
-                        dataPoint.getTimestamp().isAfter(selectionStart) &&
-                                dataPoint.getTimestamp().isBefore(selectionEnd)
-                )
-                .collect(Collectors.toList());
+        LocalDateTime selectionStart = getSelectionStart(),
+                selectionEnd = getSelectionEnd();
+
+        this.selectedIndexData = new LinkedList<>();
+        for(IndexDataPoint dataPoint : this.indexData) {
+            if(dataPoint.getTimestamp().isBefore(selectionStart)) {
+                continue;
+            }
+
+            this.selectedIndexData.add(dataPoint);
+
+            if(dataPoint.getTimestamp().isAfter(selectionEnd))
+                break;
+        }
     }
 
     private void updateTrendButtons()
