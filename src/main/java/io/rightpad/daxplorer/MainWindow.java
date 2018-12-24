@@ -209,8 +209,8 @@ public class MainWindow
 
         JMenuItem openFileMenuItem = new JMenuItem("Open...");
         openFileMenuItem.addActionListener(e -> {
-            this.fileIO.open();
-            loadData();
+            if(this.fileIO.open(this.indexData))
+                loadData();
         });
         fileMenu.add(openFileMenuItem);
 

@@ -17,7 +17,10 @@ class FileIO(
         private set
     private var fileHasBeenChanged: Boolean = false
 
-    fun open(): Boolean {
+    fun open(data: Data): Boolean {
+        if(!this.canClose(data))
+            return false
+
         val chosenFilePath = chooseFile()
         if(chosenFilePath != null) {
             open(chosenFilePath)
