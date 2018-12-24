@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 
 public class MainWindow
 {
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
     private JPanel mainPanel;
     private VisualizationPanel visualizationPanel;
     private JList visualizerList;
@@ -306,7 +304,7 @@ public class MainWindow
 
         int posX = (int) Math.floor(this.visualizationPanel.getPosition().getX());
         LocalDateTime dateOffset = UtilsKt.asEpochDays(posX, ZoneOffset.UTC);
-        this.viewportOffsetXTextField.setText(dateOffset.format(DATE_FORMAT));
+        this.viewportOffsetXTextField.setText(dateOffset.format(ConstKt.getDATE_FORMAT()));
 
         this.viewportOffsetYTextField.setText(Float.toString(this.visualizationPanel.getPosition().getY()));
     }
@@ -325,7 +323,7 @@ public class MainWindow
         this.viewportOffsetXTextField.addActionListener(SwingUtils.validatedListener(
                 this.viewportOffsetXTextField,
                 (textField, actionEvent) -> {
-                    LocalDateTime offset = LocalDate.parse(textField.getText(), DATE_FORMAT).atTime(0, 0);
+                    LocalDateTime offset = LocalDate.parse(textField.getText(), ConstKt.getDATE_FORMAT()).atTime(0, 0);
                     this.visualizationPanel.setTimeOffset(offset);
                 }
         ));
@@ -394,7 +392,7 @@ public class MainWindow
         JTextField textField = (JTextField) e.getSource();
         try {
             String input = textField.getText();
-            LocalDateTime date = LocalDate.parse(input, DATE_FORMAT).atTime(0, 0);
+            LocalDateTime date = LocalDate.parse(input, ConstKt.getDATE_FORMAT()).atTime(0, 0);
             textField.setBorder(this.defaultTextFieldBorder);
 
             if(e.getSource() == this.selectionStartTextField)
@@ -449,7 +447,7 @@ public class MainWindow
             return;
 
         String text = textField.getText();
-        String selectionText = selection.format(DATE_FORMAT);
+        String selectionText = selection.format(ConstKt.getDATE_FORMAT());
 
         if(!text.equals(selectionText)) {
             textField.setText(selectionText);

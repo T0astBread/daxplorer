@@ -1,20 +1,28 @@
 package io.rightpad.daxplorer.visualization;
 
 import io.rightpad.daxplorer.visualization.charts.Chart;
+import kotlin.jvm.functions.Function0;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
 public class ChartPanel extends JPanel
 {
     private PointF position = new PointF(0, 0);
     private float chartWidth = 100, chartHeight = 100;
     private float stepWidthX;
+    private Function<Float, String> xAxisLabelConverter;
 
     private List<ChartEntry> charts = new LinkedList<>();
 
+
+    public ChartPanel()
+    {
+        setXAxisLabelConverter(null);
+    }
 
     public PointF getPosition()
     {
@@ -73,6 +81,16 @@ public class ChartPanel extends JPanel
         System.out.println("Changing chart height from " + this.chartHeight + " to " + chartHeight);
         this.chartHeight = chartHeight;
         repaint();
+    }
+
+    public Function<Float, String> getXAxisLabelConverter()
+    {
+        return xAxisLabelConverter;
+    }
+
+    public void setXAxisLabelConverter(Function<Float, String> xAxisLabelConverter)
+    {
+        this.xAxisLabelConverter = xAxisLabelConverter != null ? xAxisLabelConverter : Object::toString;
     }
 
     private float getWidthRelation()
@@ -183,7 +201,10 @@ public class ChartPanel extends JPanel
             float relStepLineX = i * stepWidth;
             int stepLineX = toAbsoluteX(relStepLineX);
             g2d.drawLine(stepLineX, getHeight() - 10, stepLineX, getHeight() - 20);
-            g2d.drawString("" + relStepLineX, stepLineX - 5, getHeight());
+
+            String label = this.xAxisLabelConverter.apply(relStepLineX);
+            int labelWidth = g2d.getFontMetrics().stringWidth(label);
+            g2d.drawString(label, stepLineX - labelWidth / 2, getHeight());
         }
     }
 

@@ -1,5 +1,6 @@
 package io.rightpad.daxplorer.visualization;
 
+import io.rightpad.daxplorer.ConstKt;
 import io.rightpad.daxplorer.data.IndexDataPoint;
 import io.rightpad.daxplorer.utils.UtilsKt;
 import io.rightpad.daxplorer.visualization.visualizers.TimeSeriesVisualizer;
@@ -16,6 +17,11 @@ public class VisualizationPanel extends ChartPanel
 {
     private List<Visualizer> visualizers = new ArrayList<>();
     private List<IndexDataPoint> indexData;
+
+    public VisualizationPanel()
+    {
+        setXAxisLabelConverter(x -> UtilsKt.asEpochDays(x, ZoneOffset.UTC).format(ConstKt.getDATE_FORMAT()));
+    }
 
     public void addVisualizers(Visualizer... visualizers)
     {
