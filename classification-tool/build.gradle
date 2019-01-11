@@ -1,10 +1,11 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.2.70'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'application'
 }
 
 group 'io.rightpad.daxplorer'
-version '1.0-SNAPSHOT'
+version '0.1.1'
 
 sourceCompatibility = 1.8
 
@@ -14,6 +15,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile project(':common')
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
@@ -22,4 +24,13 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+mainClassName = 'io.rightpad.daxplorer.Main'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.rightpad.daxplorer.Main'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
