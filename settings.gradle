@@ -1,4 +1,5 @@
 rootProject.name = 'daxplorer'
-include 'classification-tool'
 include 'common'
+include 'classification-tool'
+include 'data-compiler'
 
