@@ -1,5 +1,6 @@
 package io.rightpad.daxplorer.visualization.visualizers
 
+import io.rightpad.daxplorer.data.SimpleValueDataPoint
 import io.rightpad.daxplorer.data.TimeSeriesDataPoint
 import io.rightpad.daxplorer.data.features.AverageFeature
 import io.rightpad.daxplorer.data.features.Feature
@@ -9,9 +10,9 @@ import io.rightpad.daxplorer.visualization.charts.LineChart
 import java.awt.Color
 import java.time.LocalDateTime
 
-class AverageFeatureVisualizer(span: Int, var color: Color) : TimeSeriesVisualizer<TimeSeriesDataPoint>("Average") {
+class AverageFeatureVisualizer(span: Int, var color: Color) : TimeSeriesVisualizer<SimpleValueDataPoint>("Average") {
     private val averageFeature: AverageFeature = AverageFeature(span)
-    override val features: List<Feature<TimeSeriesDataPoint>> = listOf(this.averageFeature as Feature<TimeSeriesDataPoint>)
+    override val features: List<Feature<SimpleValueDataPoint>> = listOf(this.averageFeature)
 
     private val lineChart: LineChart = LineChart()
     override val charts: List<Chart> = listOf(this.lineChart)
