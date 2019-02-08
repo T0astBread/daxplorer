@@ -1,7 +1,6 @@
 package io.rightpad.daxplorer.visualization.visualizers
 
 import io.rightpad.daxplorer.data.SimpleValueDataPoint
-import io.rightpad.daxplorer.data.TimeSeriesDataPoint
 import io.rightpad.daxplorer.data.features.AverageFeature
 import io.rightpad.daxplorer.data.features.Feature
 import io.rightpad.daxplorer.utils.daysSinceEpoch
