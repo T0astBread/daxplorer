@@ -11,6 +11,7 @@ import io.rightpad.daxplorer.uxsugar.ViewportOffsetChangeMouseListener;
 import io.rightpad.daxplorer.uxsugar.ViewportSpanYChangeMouseListener;
 import io.rightpad.daxplorer.visualization.PointF;
 import io.rightpad.daxplorer.visualization.VisualizationPanel;
+import io.rightpad.daxplorer.visualization.visualizers.AverageFeatureVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.DateSelectionVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.IndexVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.Visualizer;
@@ -250,6 +251,7 @@ public class MainWindow
         addVisualizer(new IndexVisualizer());
         this.selectionVisualizer = new DateSelectionVisualizer();
         addVisualizer(this.selectionVisualizer);
+        addVisualizer(new AverageFeatureVisualizer(50, Color.blue));
     }
 
     private void initSelectionTextFieldListeners()
