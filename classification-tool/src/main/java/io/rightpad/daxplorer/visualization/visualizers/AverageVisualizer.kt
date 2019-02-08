@@ -10,7 +10,7 @@ import io.rightpad.daxplorer.visualization.charts.LineChart
 import java.awt.Color
 import java.time.LocalDateTime
 
-class AverageFeatureVisualizer(span: Int, var color: Color) : TimeSeriesVisualizer<SimpleValueDataPoint>("Average") {
+class AverageVisualizer(span: Int, var color: Color) : TimeSeriesVisualizer<SimpleValueDataPoint>("Average") {
     private val averageFeature: AverageFeature = AverageFeature(span)
     override val features: List<Feature<SimpleValueDataPoint>> = listOf(this.averageFeature)
 
