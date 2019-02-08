@@ -12,6 +12,9 @@ class IndexDataPoint(
         var trend: Byte
 ) : TimeSeriesDataPoint(timestamp) {
 
+    val average: Float
+        get() = (this.start + this.end) / 2
+
     override fun equals(other: Any?): Boolean {
         if(this === other) return true
         if(other !is IndexDataPoint) return false

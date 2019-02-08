@@ -11,6 +11,7 @@ import io.rightpad.daxplorer.uxsugar.ViewportOffsetChangeMouseListener;
 import io.rightpad.daxplorer.uxsugar.ViewportSpanYChangeMouseListener;
 import io.rightpad.daxplorer.visualization.PointF;
 import io.rightpad.daxplorer.visualization.VisualizationPanel;
+import io.rightpad.daxplorer.visualization.visualizers.AverageVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.DateSelectionVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.IndexVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.Visualizer;
@@ -23,7 +24,6 @@ import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -250,6 +250,7 @@ public class MainWindow
         addVisualizer(new IndexVisualizer());
         this.selectionVisualizer = new DateSelectionVisualizer();
         addVisualizer(this.selectionVisualizer);
+        addVisualizer(new AverageVisualizer(50, Color.blue));
     }
 
     private void initSelectionTextFieldListeners()
