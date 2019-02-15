@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+    compile "com.xenomachina:kotlin-argparser:2.0.7"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile project(':common')
     testCompile group: 'junit', name: 'junit', version: '4.12'
