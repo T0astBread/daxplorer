@@ -9,24 +9,25 @@ class AverageFeature(var span: Int): Feature<SimpleValueDataPoint> {
     override fun calculate(indexData: List<IndexDataPoint>) {
         val newFeatureData = mutableListOf<SimpleValueDataPoint>()
 
-        val averageSpan = arrayOfNulls<IndexDataPoint>(this.span)
+        val averageSpan = mutableListOf<IndexDataPoint>()
 
-        var i = 0
         for(dataPoint in indexData) {
-            averageSpan[i++] = dataPoint
-            if(i == this.span) {
+            averageSpan.add(dataPoint)
+
+            if(averageSpan.size > this.span)
+                averageSpan.removeAt(0)
+
+            if(averageSpan.size == this.span)
                 newFeatureData.add(SimpleValueDataPoint(
                         dataPoint.timestamp,
                         averageOf(averageSpan)
                 ))
-                i = 0
-            }
         }
 
         this.featureData = newFeatureData
     }
 
-    private fun averageOf(averageSpan: Array<IndexDataPoint?>): Float =
+    private fun averageOf(averageSpan: List<IndexDataPoint?>): Float =
             averageSpan.asSequence()
                     .sumByDouble { it!!.average.toDouble() }
                     .div(averageSpan.size)
