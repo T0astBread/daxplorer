@@ -16,6 +16,6 @@ class Args(parser: ArgParser) {
     ) { File(this) }
             .default { File(
                     this.inputFile.parentFile,
-                    "${this.inputFile.nameWithoutExtension}.csv"
+                    "compiled_${this.inputFile.nameWithoutExtension}.csv"
             ) }
 }
