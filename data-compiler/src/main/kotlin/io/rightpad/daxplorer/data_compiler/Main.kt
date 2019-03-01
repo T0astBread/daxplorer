@@ -19,9 +19,13 @@ class Main {
             val indexData = args.inputFile
                     .readLines()
                     .map { it.fromCSVToIndexDataPoint() }
-            val compiledData = compile(indexData, listOf(
-                    AverageFeature(50) as Feature<TimeSeriesDataPoint>
-            ))
+
+            val features = mutableListOf<Feature<TimeSeriesDataPoint>>()
+            args.averages
+                    .map { span -> AverageFeature(span) as Feature<TimeSeriesDataPoint> }
+                    .forEach { features.add(it) }
+
+            val compiledData = compile(indexData, features)
             args.outputFile.writeText(compiledData)
         }
     }

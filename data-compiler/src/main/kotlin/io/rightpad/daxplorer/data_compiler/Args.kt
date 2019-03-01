@@ -18,4 +18,12 @@ class Args(parser: ArgParser) {
                     this.inputFile.parentFile,
                     "compiled_${this.inputFile.nameWithoutExtension}.csv"
             ) }
+
+    val averages by parser.storing(
+            "--averages",
+            help = "The average columns to add, specified as their spans, comma seperated. For example: --averages 50,100,200"
+    ) {
+        splitToSequence(',')
+                .map { it.toInt() }
+    }.default(emptySequence<Int>())
 }
