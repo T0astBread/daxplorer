@@ -2,6 +2,10 @@ package io.rightpad.daxplorer.data_compiler
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.mainBody
+import io.rightpad.daxplorer.data.TimeSeriesDataPoint
+import io.rightpad.daxplorer.data.features.AverageFeature
+import io.rightpad.daxplorer.data.features.Feature
+import io.rightpad.daxplorer.data.serialization.fromCSVToIndexDataPoint
 
 class Main {
     companion object {
@@ -11,6 +15,14 @@ class Main {
 
             println(args.inputFile)
             println(args.outputFile)
+
+            val indexData = args.inputFile
+                    .readLines()
+                    .map { it.fromCSVToIndexDataPoint() }
+            val compiledData = compile(indexData, listOf(
+                    AverageFeature(50) as Feature<TimeSeriesDataPoint>
+            ))
+            args.outputFile.writeText(compiledData)
         }
     }
 }
