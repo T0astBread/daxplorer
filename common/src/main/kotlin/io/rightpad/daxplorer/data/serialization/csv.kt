@@ -1,11 +1,21 @@
 package io.rightpad.daxplorer.data.serialization
 
 import io.rightpad.daxplorer.data.IndexDataPoint
+import io.rightpad.daxplorer.data.SimpleValueDataPoint
+import io.rightpad.daxplorer.data.TimeSeriesDataPoint
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.stream.Collector
 
 val CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd")
+
+fun TimeSeriesDataPoint.toCSV(): String {
+    if(this is IndexDataPoint)
+        return (this as IndexDataPoint).toCSV()
+    if(this is SimpleValueDataPoint)
+        return (this as SimpleValueDataPoint).toCSV()
+    return ""
+}
 
 fun IndexDataPoint.toCSV() =
         arrayOf(
@@ -30,6 +40,9 @@ fun String.fromCSVToIndexDataPoint(): IndexDataPoint {
             trend = if(tokens.size < 7) 0 else tokens[6].toByte()
     )
 }
+
+fun SimpleValueDataPoint.toCSV(): String =
+        "${timestamp.format(CSV_DATE_FORMAT)};$value"
 
 val csvCollector = Collector.of<IndexDataPoint, MutableList<String>, String>(
         { mutableListOf() },
