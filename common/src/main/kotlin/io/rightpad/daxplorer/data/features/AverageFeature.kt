@@ -32,4 +32,7 @@ class AverageFeature(var span: Int): Feature<SimpleValueDataPoint> {
                     .sumByDouble { it!!.average.toDouble() }
                     .div(averageSpan.size)
                     .toFloat()
+
+    override fun toString(): String =
+            "average[$span]"
 }
