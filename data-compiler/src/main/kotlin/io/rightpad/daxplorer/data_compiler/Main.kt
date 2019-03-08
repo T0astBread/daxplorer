@@ -25,8 +25,13 @@ class Main {
                     .map { span -> AverageFeature(span) as Feature<TimeSeriesDataPoint> }
                     .forEach { features.add(it) }
 
+            args.outputFile.delete()
+
+            if(!args.noHeader)
+                args.outputFile.appendText(generateHeader(features))
+
             val compiledData = compile(indexData, features)
-            args.outputFile.writeText(compiledData)
+            args.outputFile.appendText(compiledData)
         }
     }
 }
