@@ -1,7 +1,7 @@
 package io.rightpad.daxplorer.data.features
 
-import io.rightpad.daxplorer.data.IndexDataPoint
-import io.rightpad.daxplorer.data.SimpleValueDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.SimpleValueDataPoint
 
 class AverageFeature(var span: Int): Feature<SimpleValueDataPoint> {
     override var featureData: List<SimpleValueDataPoint>? = null

@@ -1,7 +1,7 @@
 package io.rightpad.daxplorer.data_compiler
 
-import io.rightpad.daxplorer.data.IndexDataPoint
-import io.rightpad.daxplorer.data.TimeSeriesDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.TimeSeriesDataPoint
 import io.rightpad.daxplorer.data.features.Feature
 import io.rightpad.daxplorer.data.serialization.toCSV
 

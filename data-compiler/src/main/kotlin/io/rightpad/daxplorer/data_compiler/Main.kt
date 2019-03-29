@@ -2,7 +2,7 @@ package io.rightpad.daxplorer.data_compiler
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.mainBody
-import io.rightpad.daxplorer.data.TimeSeriesDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.TimeSeriesDataPoint
 import io.rightpad.daxplorer.data.features.AverageFeature
 import io.rightpad.daxplorer.data.features.Feature
 import io.rightpad.daxplorer.data.serialization.fromCSVToIndexDataPoint

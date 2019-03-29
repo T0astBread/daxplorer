@@ -1,8 +1,8 @@
 package io.rightpad.daxplorer.data.serialization
 
-import io.rightpad.daxplorer.data.IndexDataPoint
-import io.rightpad.daxplorer.data.SimpleValueDataPoint
-import io.rightpad.daxplorer.data.TimeSeriesDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.SimpleValueDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.TimeSeriesDataPoint
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.stream.Collector

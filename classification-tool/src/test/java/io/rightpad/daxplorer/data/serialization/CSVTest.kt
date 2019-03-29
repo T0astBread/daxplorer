@@ -1,6 +1,6 @@
 package io.rightpad.daxplorer.data.serialization
 
-import io.rightpad.daxplorer.data.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDateTime
