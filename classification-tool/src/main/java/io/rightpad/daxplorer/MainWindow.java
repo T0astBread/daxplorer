@@ -31,8 +31,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class MainWindow
-{
+public class MainWindow {
     private JPanel mainPanel;
     private VisualizationPanel visualizationPanel;
     private JList visualizerList;
@@ -45,6 +44,10 @@ public class MainWindow
     private JTextField viewportOffsetXTextField;
     private JTextField viewportSpanYTextField;
     private JTextField viewportOffsetYTextField;
+    private JPanel editVisualizersButtonPanel;
+    private JButton addVisualizerButton;
+    private JButton editVisualizerButton;
+    private JButton removeVisualizerButton;
 
     private JFrame frame;
     private JMenuBar menuBar;
@@ -57,8 +60,7 @@ public class MainWindow
 
     private FileIO fileIO;
 
-    public MainWindow()
-    {
+    public MainWindow() {
         setIndexData(new ArrayList<>(0));
 
         initFileIO();
@@ -86,16 +88,14 @@ public class MainWindow
         this.visualizationPanel.visualize();
     }
 
-    private void setIndexData(List<IndexDataPoint> indexData)
-    {
+    private void setIndexData(List<IndexDataPoint> indexData) {
         this.indexData = indexData;
         this.visualizationPanel.setIndexData(indexData);
 
         adjustViewportSettings();
     }
 
-    private void adjustViewportSettings()
-    {
+    private void adjustViewportSettings() {
         float minValue = this.indexData.stream()
                 .map(IndexDataPoint::getMin)
                 .min(Float::compareTo)
@@ -116,8 +116,7 @@ public class MainWindow
         this.visualizationPanel.setTimeOffset(firstDataPoint);
     }
 
-    private void initFileIO()
-    {
+    private void initFileIO() {
         Function0<String> chooseFile = () -> {
             JFileChooser fileChooser = new JFileChooser();
             int response = fileChooser.showOpenDialog(this.mainPanel);
@@ -149,8 +148,7 @@ public class MainWindow
         this.fileIO = new FileIO(chooseFile, shouldSaveUnsavedChanges, CsvKt.getCsvCollector());
     }
 
-    private void loadData()
-    {
+    private void loadData() {
         if(this.fileIO.getOpenFile() == null)
             return;
 
@@ -163,15 +161,13 @@ public class MainWindow
         updateFileDependentStuff();
     }
 
-    private void updateFileDependentStuff()
-    {
+    private void updateFileDependentStuff() {
         updateMenuItems();
         clearControlsState();
         updateFileDependentControls();
     }
 
-    private void updateFileDependentControls()
-    {
+    private void updateFileDependentControls() {
         boolean fileIsLoaded = this.fileIO.getOpenFile() != null;
         if(!fileIsLoaded)
             setTrendButtonsEnabled(false);
@@ -187,22 +183,19 @@ public class MainWindow
         }
     }
 
-    private void clearControlsState()
-    {
+    private void clearControlsState() {
         this.setSelectionStart(null);
         this.setSelectionEnd(null);
         deselectAllTrendButtons();
     }
 
-    private void updateMenuItems()
-    {
+    private void updateMenuItems() {
         for(JMenuItem fileDependentMenuItem : this.fileDependentMenuItems) {
             fileDependentMenuItem.setEnabled(this.fileIO.getOpenFile() != null);
         }
     }
 
-    private void initMenuBar()
-    {
+    private void initMenuBar() {
         this.menuBar = new JMenuBar();
 
         JMenu fileMenu = new JMenu("File");
@@ -242,8 +235,7 @@ public class MainWindow
         };
     }
 
-    private void initVisualizerList()
-    {
+    private void initVisualizerList() {
         this.visualizerListModel = new DefaultListModel<>();
         this.visualizerList.setModel(this.visualizerListModel);
 
@@ -253,23 +245,18 @@ public class MainWindow
         addVisualizer(new AverageVisualizer(50, Color.blue));
     }
 
-    private void initSelectionTextFieldListeners()
-    {
-        KeyListener selectionTextFieldKeyListener = new KeyListener()
-        {
+    private void initSelectionTextFieldListeners() {
+        KeyListener selectionTextFieldKeyListener = new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e)
-            {
+            public void keyTyped(KeyEvent e) {
             }
 
             @Override
-            public void keyPressed(KeyEvent e)
-            {
+            public void keyPressed(KeyEvent e) {
             }
 
             @Override
-            public void keyReleased(KeyEvent e)
-            {
+            public void keyReleased(KeyEvent e) {
                 onSelectionTextFieldChange(e);
             }
         };
@@ -277,8 +264,7 @@ public class MainWindow
         this.selectionEndTextField.addKeyListener(selectionTextFieldKeyListener);
     }
 
-    private void initTrendButtons()
-    {
+    private void initTrendButtons() {
         setTrendButtonsEnabled(false);
 
         this.upRadioButton.addActionListener(this::onTrendButtonClick);
@@ -286,8 +272,7 @@ public class MainWindow
         this.downRadioButton.addActionListener(this::onTrendButtonClick);
     }
 
-    private void initMouseSelectionListeners()
-    {
+    private void initMouseSelectionListeners() {
         SelectionChangeMouseListener selectionChangeMouseListener = new SelectionChangeMouseListener(this.visualizationPanel, this.selectionVisualizer);
         selectionChangeMouseListener.setOnMouseDrag(() -> {
             setTrendButtonsEnabled(false);
@@ -299,8 +284,7 @@ public class MainWindow
         this.visualizationPanel.addMouseMotionListener(selectionChangeMouseListener);
     }
 
-    private void updateViewportTextFields()
-    {
+    private void updateViewportTextFields() {
         this.viewportSpanXTextField.setText(Float.toString(this.visualizationPanel.getChartWidth()));
         this.viewportSpanYTextField.setText(Float.toString(this.visualizationPanel.getChartHeight()));
 
@@ -314,8 +298,7 @@ public class MainWindow
         this.viewportOffsetYTextField.setText(Float.toString(this.visualizationPanel.getPosition().getY()));
     }
 
-    private void initViewPortTextFieldListeners()
-    {
+    private void initViewPortTextFieldListeners() {
         this.viewportSpanXTextField.addActionListener(viewportSpanTextFieldListener(
                 this.viewportSpanXTextField,
                 this.visualizationPanel::setChartWidth
@@ -341,30 +324,26 @@ public class MainWindow
         ));
     }
 
-    private ActionListener viewportSpanTextFieldListener(JTextField textField, Consumer<Float> setter)
-    {
+    private ActionListener viewportSpanTextFieldListener(JTextField textField, Consumer<Float> setter) {
         return SwingUtils.validatedListener(textField, (textField1, actionEvent) ->
                 setter.accept(Float.parseFloat(textField1.getText()))
         );
     }
 
-    private void initMouseOffsetListeners()
-    {
+    private void initMouseOffsetListeners() {
         ViewportOffsetChangeMouseListener viewportOffsetChangeMouseListener = new ViewportOffsetChangeMouseListener(this.visualizationPanel);
         viewportOffsetChangeMouseListener.setOnDrag(this::updateViewportTextFields);
         this.visualizationPanel.addMouseMotionListener(viewportOffsetChangeMouseListener);
         this.visualizationPanel.addMouseListener(viewportOffsetChangeMouseListener);
     }
 
-    private void initMouseSpanYListeners()
-    {
+    private void initMouseSpanYListeners() {
         ViewportSpanYChangeMouseListener viewportSpanYChangeMouseListener = new ViewportSpanYChangeMouseListener(this.visualizationPanel);
         viewportSpanYChangeMouseListener.setOnScroll(this::updateViewportTextFields);
         this.visualizationPanel.addMouseWheelListener(viewportSpanYChangeMouseListener);
     }
 
-    public void show()
-    {
+    public void show() {
         this.frame = new JFrame("daxplorer");
         initWindowClosingInterceptor();
         this.frame.setPreferredSize(new Dimension(1000, 600));
@@ -374,28 +353,23 @@ public class MainWindow
         this.frame.setVisible(true);
     }
 
-    private void initWindowClosingInterceptor()
-    {
+    private void initWindowClosingInterceptor() {
         this.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.frame.addWindowListener(new WindowAdapter()
-        {
+        this.frame.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent e)
-            {
+            public void windowClosing(WindowEvent e) {
                 if(fileIO.canClose(indexData))
                     frame.dispose();
             }
         });
     }
 
-    private void addVisualizer(Visualizer visualizer)
-    {
+    private void addVisualizer(Visualizer visualizer) {
         this.visualizationPanel.addVisualizers(visualizer);
         this.visualizerListModel.addElement(visualizer);
     }
 
-    private void onSelectionTextFieldChange(AWTEvent e)
-    {
+    private void onSelectionTextFieldChange(AWTEvent e) {
         JTextField textField = (JTextField) e.getSource();
         try {
             String input = textField.getText();
@@ -412,38 +386,32 @@ public class MainWindow
         }
     }
 
-    private LocalDateTime getSelectionStart()
-    {
+    private LocalDateTime getSelectionStart() {
         return this.selectionVisualizer.getSelectionStart();
     }
 
-    private void setSelectionStart(LocalDateTime selectionStart)
-    {
+    private void setSelectionStart(LocalDateTime selectionStart) {
         this.selectionVisualizer.setSelectionStart(selectionStart);
         updateSelection();
     }
 
-    private LocalDateTime getSelectionEnd()
-    {
+    private LocalDateTime getSelectionEnd() {
         return this.selectionVisualizer.getSelectionEnd();
     }
 
-    private void setSelectionEnd(LocalDateTime selectionEnd)
-    {
+    private void setSelectionEnd(LocalDateTime selectionEnd) {
         this.selectionVisualizer.setSelectionEnd(selectionEnd);
         updateSelection();
     }
 
-    private void updateSelection()
-    {
+    private void updateSelection() {
         updateSelectionList();
         updateSelectionTextFields();
         updateTrendButtons();
         this.visualizationPanel.visualize();
     }
 
-    private void updateSelectionTextFields()
-    {
+    private void updateSelectionTextFields() {
         if(this.selectedIndexData == null)
             return;
 
@@ -451,8 +419,7 @@ public class MainWindow
         updateSelectionTextField(this.selectionEndTextField, this.selectedIndexData.get(this.selectedIndexData.size() - 1).getTimestamp().plusDays(1));
     }
 
-    private void updateSelectionTextField(JTextField textField, LocalDateTime selection)
-    {
+    private void updateSelectionTextField(JTextField textField, LocalDateTime selection) {
         if(selection == null)
             return;
 
@@ -464,8 +431,7 @@ public class MainWindow
         }
     }
 
-    private void updateSelectionList()
-    {
+    private void updateSelectionList() {
         this.selectedIndexData = null;
         if(getSelectionStart() == null || getSelectionEnd() == null)
             return;
@@ -486,8 +452,7 @@ public class MainWindow
         }
     }
 
-    private void updateTrendButtons()
-    {
+    private void updateTrendButtons() {
         boolean selectionIsInvalid = getSelectionStart() == null || getSelectionEnd() == null;
         setTrendButtonsEnabled(!selectionIsInvalid);
         if(selectionIsInvalid)
@@ -505,27 +470,23 @@ public class MainWindow
             deselectAllTrendButtons();
     }
 
-    private void setTrendButtonsEnabled(boolean enabled)
-    {
+    private void setTrendButtonsEnabled(boolean enabled) {
         this.downRadioButton.setEnabled(enabled);
         this.stallingRadioButton.setEnabled(enabled);
         this.upRadioButton.setEnabled(enabled);
     }
 
-    private void setTrendButtonsValue(byte trend)
-    {
+    private void setTrendButtonsValue(byte trend) {
         this.downRadioButton.setSelected(trend == -1);
         this.stallingRadioButton.setSelected(trend == 0);
         this.upRadioButton.setSelected(trend == 1);
     }
 
-    private void deselectAllTrendButtons()
-    {
+    private void deselectAllTrendButtons() {
         ((DefaultButtonModel) this.downRadioButton.getModel()).getGroup().clearSelection();
     }
 
-    private void onTrendButtonClick(ActionEvent e)
-    {
+    private void onTrendButtonClick(ActionEvent e) {
         if(this.selectedIndexData == null)
             return;
 
@@ -558,28 +519,15 @@ public class MainWindow
      *
      * @noinspection ALL
      */
-    private void $$$setupUI$$$()
-    {
+    private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
-        final JScrollPane scrollPane1 = new JScrollPane();
-        scrollPane1.setPreferredSize(new Dimension(0, 0));
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridBagLayout());
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridheight = 2;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.ipadx = 250;
-        mainPanel.add(scrollPane1, gbc);
-        visualizerList = new JList();
-        scrollPane1.setViewportView(visualizerList);
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.gridheight = 3;
         gbc.fill = GridBagConstraints.BOTH;
         mainPanel.add(panel1, gbc);
@@ -678,7 +626,7 @@ public class MainWindow
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.gridheight = 5;
+        gbc.gridheight = 6;
         gbc.weightx = 3.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
@@ -777,6 +725,56 @@ public class MainWindow
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
         panel3.add(upRadioButton, gbc);
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        mainPanel.add(panel4, gbc);
+        final JScrollPane scrollPane1 = new JScrollPane();
+        scrollPane1.setPreferredSize(new Dimension(0, 0));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridheight = 2;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.ipadx = 250;
+        panel4.add(scrollPane1, gbc);
+        visualizerList = new JList();
+        scrollPane1.setViewportView(visualizerList);
+        editVisualizersButtonPanel = new JPanel();
+        editVisualizersButtonPanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), 2, -1));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel4.add(editVisualizersButtonPanel, gbc);
+        editVisualizersButtonPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), null));
+        addVisualizerButton = new JButton();
+        Font addVisualizerButtonFont = this.$$$getFont$$$("Consolas", Font.BOLD, 20, addVisualizerButton.getFont());
+        if(addVisualizerButtonFont != null) addVisualizerButton.setFont(addVisualizerButtonFont);
+        addVisualizerButton.setHorizontalAlignment(0);
+        addVisualizerButton.setHorizontalTextPosition(0);
+        addVisualizerButton.setPreferredSize(new Dimension(50, 30));
+        addVisualizerButton.setText("+");
+        addVisualizerButton.setToolTipText("Add an indicator");
+        editVisualizersButtonPanel.add(addVisualizerButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        editVisualizerButton = new JButton();
+        editVisualizerButton.setPreferredSize(new Dimension(60, 30));
+        editVisualizerButton.setText("Edit");
+        editVisualizerButton.setToolTipText("Edit an indicator");
+        editVisualizersButtonPanel.add(editVisualizerButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        removeVisualizerButton = new JButton();
+        Font removeVisualizerButtonFont = this.$$$getFont$$$("Consolas", Font.BOLD, 20, removeVisualizerButton.getFont());
+        if(removeVisualizerButtonFont != null) removeVisualizerButton.setFont(removeVisualizerButtonFont);
+        removeVisualizerButton.setHorizontalTextPosition(11);
+        removeVisualizerButton.setPreferredSize(new Dimension(50, 30));
+        removeVisualizerButton.setText("-");
+        removeVisualizerButton.setToolTipText("Remove an indicator");
+        editVisualizersButtonPanel.add(removeVisualizerButton, new com.intellij.uiDesigner.core.GridConstraints(0, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
         ButtonGroup buttonGroup;
         buttonGroup = new ButtonGroup();
         buttonGroup.add(upRadioButton);
@@ -788,8 +786,7 @@ public class MainWindow
     /**
      * @noinspection ALL
      */
-    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont)
-    {
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
         if(currentFont == null) return null;
         String resultName;
         if(fontName == null) {resultName = currentFont.getName();}
@@ -805,4 +802,5 @@ public class MainWindow
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() { return mainPanel; }
+
 }
