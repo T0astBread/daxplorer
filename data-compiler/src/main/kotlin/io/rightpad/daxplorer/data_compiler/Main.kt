@@ -6,8 +6,10 @@ import com.xenomachina.argparser.mainBody
 import io.rightpad.daxplorer.data.datapoints.absolute.TimeSeriesDataPoint
 import io.rightpad.daxplorer.data.features.AverageFeature
 import io.rightpad.daxplorer.data.features.Feature
+import io.rightpad.daxplorer.data.scalers.AverageDataPointScaler
 import io.rightpad.daxplorer.data.scalers.IndexDataPointScaler
 import io.rightpad.daxplorer.data.scalers.Scaler
+import io.rightpad.daxplorer.data.scalers.SimpleValueDataPointScaler
 import io.rightpad.daxplorer.data.serialization.fromCSVToIndexDataPoint
 import io.rightpad.daxplorer.data_compiler.scaling.*
 
@@ -71,6 +73,11 @@ class Main {
             val scalers = mutableListOf(
                     IndexDataPointScaler() as Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>
             )
+
+            args.averages.forEach {
+                scalers.add(AverageDataPointScaler() as Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>)
+            }
+
             return scalers
         }
 

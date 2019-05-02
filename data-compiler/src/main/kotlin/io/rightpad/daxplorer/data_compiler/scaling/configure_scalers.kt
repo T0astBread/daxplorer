@@ -1,9 +1,7 @@
 package io.rightpad.daxplorer.data_compiler.scaling
 
 import io.rightpad.daxplorer.data.datapoints.absolute.TimeSeriesDataPoint
-import io.rightpad.daxplorer.data.scalers.IndexDataPointScaler
-import io.rightpad.daxplorer.data.scalers.IndexDataPointScalerConfig
-import io.rightpad.daxplorer.data.scalers.Scaler
+import io.rightpad.daxplorer.data.scalers.*
 import io.rightpad.daxplorer.data_compiler.ScalerConfig
 
 fun applyScalerConfiguration(
@@ -11,6 +9,7 @@ fun applyScalerConfiguration(
         scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>>
 ) {
     applyIndexDataPointScalerConfig(config, scalers)
+    applyMoneyScalerConfig(config, scalers)
 }
 
 private fun applyIndexDataPointScalerConfig(
@@ -26,4 +25,12 @@ private fun applyIndexDataPointScalerConfig(
     )
     scalers.mapNotNull { it as? IndexDataPointScaler }
             .forEach { it.configure(indexDataPointScalerConfig) }
+}
+
+fun applyMoneyScalerConfig(
+        config: ScalerConfig,
+        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>>
+) {
+    scalers.mapNotNull { it as? AverageDataPointScaler }
+            .forEach { it.configure(config.moneyScalerConfig) }
 }
