@@ -2,18 +2,6 @@ package io.rightpad.daxplorer.data.scalers
 
 class PrimitiveScaler(var min: Float? = null, var max: Float? = null): Scaler<Float, Float, PrimitiveScalerConfig> {
 
-    override fun ingest(dataPoint: Float) {
-        if(this.max == null)
-            this.max = dataPoint
-
-        if(this.min == null || dataPoint < this.min!!)
-            this.min = dataPoint
-        else if(dataPoint > this.max!!)
-            this.max = dataPoint
-    }
-
-    fun ingest(dataPoint: Int) = ingest(dataPoint.toFloat())
-
     override fun configure(config: PrimitiveScalerConfig) {
         this.min = config.min
         this.max = config.max

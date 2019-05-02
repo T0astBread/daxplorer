@@ -10,14 +10,6 @@ class IndexDataPointScaler: Scaler<IndexDataPoint, RelativeIndexDataPoint, Index
     private val maxScaler = PrimitiveScaler()
     private val volumeScaler = PrimitiveScaler()
 
-    override fun ingest(dataPoint: IndexDataPoint) {
-        this.startScaler.ingest(dataPoint.start)
-        this.endScaler.ingest(dataPoint.end)
-        this.minScaler.ingest(dataPoint.min)
-        this.maxScaler.ingest(dataPoint.max)
-        this.volumeScaler.ingest(dataPoint.volume)
-    }
-
     override fun configure(config: IndexDataPointScalerConfig) {
         this.startScaler.configure(config.startScalerConfig)
         this.endScaler.configure(config.endScalerConfig)
