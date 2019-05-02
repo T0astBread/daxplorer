@@ -1,6 +1,6 @@
 package io.rightpad.daxplorer.visualization.visualizers
 
-import io.rightpad.daxplorer.data.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
 import io.rightpad.daxplorer.data.features.Feature
 import io.rightpad.daxplorer.data.features.IndexFeature
 import io.rightpad.daxplorer.utils.daysSinceEpoch

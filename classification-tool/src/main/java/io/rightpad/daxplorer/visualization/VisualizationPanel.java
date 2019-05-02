@@ -1,7 +1,7 @@
 package io.rightpad.daxplorer.visualization;
 
 import io.rightpad.daxplorer.ConstKt;
-import io.rightpad.daxplorer.data.IndexDataPoint;
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint;
 import io.rightpad.daxplorer.utils.UtilsKt;
 import io.rightpad.daxplorer.visualization.visualizers.TimeSeriesVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.Visualizer;
