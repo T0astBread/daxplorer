@@ -48,7 +48,7 @@ class Main {
                     args.scaledOutputFile!!.appendText(renderedScaledData)
                 }
 
-                if(args.configOutputFile == null) {
+                if(args.configOutputFile != null) {
                     println("Saving config file to ${args.configOutputFile}")
 
                     val scalerConfig = buildScalerConfiguration(scalers)
