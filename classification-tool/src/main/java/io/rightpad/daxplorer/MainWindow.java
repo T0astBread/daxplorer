@@ -14,6 +14,7 @@ import io.rightpad.daxplorer.visualization.VisualizationPanel;
 import io.rightpad.daxplorer.visualization.visualizers.AverageVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.DateSelectionVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.IndexVisualizer;
+import io.rightpad.daxplorer.visualization.visualizers.RSIVisualizer;
 import io.rightpad.daxplorer.visualization.visualizers.Visualizer;
 import kotlin.jvm.functions.Function0;
 
@@ -250,6 +251,7 @@ public class MainWindow
         addVisualizer(new IndexVisualizer());
         this.selectionVisualizer = new DateSelectionVisualizer();
         addVisualizer(this.selectionVisualizer);
+        addVisualizer(new RSIVisualizer(Color.red,Color.yellow,Color.green));
         addVisualizer(new AverageVisualizer(50, Color.blue));
     }
 
