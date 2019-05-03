@@ -8,7 +8,7 @@ import io.rightpad.daxplorer.data.scalers.Scaler
 import io.rightpad.daxplorer.data_compiler.ScalerConfig
 
 fun buildScalerConfiguration(
-        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>>
+        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>?>
 ): ScalerConfig {
     val indexDataPointScalerConfigs = scalers.mapNotNull { it as? IndexDataPointScaler }
             .map { scaler -> scaler.buildConfig() }
