@@ -25,11 +25,6 @@ class Main {
                     .readLines()
                     .map { it.fromCSVToIndexDataPoint() }
 
-//            val features = mutableListOf<Feature<TimeSeriesDataPoint>>()
-//            args.averages
-//                    .map { span -> AverageFeature(span) as Feature<TimeSeriesDataPoint> }
-//                    .forEach { features.add(it) }
-
             val features = args.config.features
                     ?.map { it.createFeature() as Feature<TimeSeriesDataPoint> } ?: listOf()
 
@@ -89,12 +84,10 @@ class Main {
         ) {
             val createNewScalerConfig = args.config.scalerConfig == null
             println(if(createNewScalerConfig) "Creating new scaler config" else "Reading scaler config from file")
-//
+
             val config =
                     if(createNewScalerConfig) createConfigFromData(compiledData)
                     else args.config.scalerConfig
-
-//                GSON.fromJson<ScalerConfig>(args.scaleParams!!.reader(), ScalerConfig::class.java)
 
             if(config != null)
                 applyScalerConfiguration(config, scalers)
