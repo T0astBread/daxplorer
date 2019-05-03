@@ -11,6 +11,7 @@ import io.rightpad.daxplorer.data_compiler.scaling.applyScalerConfiguration
 import io.rightpad.daxplorer.data_compiler.scaling.buildScalerConfiguration
 import io.rightpad.daxplorer.data_compiler.scaling.createConfigFromData
 import io.rightpad.daxplorer.data_compiler.scaling.scale
+import java.io.File
 
 class Main {
     companion object {
@@ -28,10 +29,13 @@ class Main {
             val features = args.config.features
                     ?.map { it.createFeature() as Feature<TimeSeriesDataPoint> } ?: listOf()
 
-            args.outputFile.delete()
+            fun writeHeaderIfNeeded(file: File) {
+                if(!args.noHeader)
+                    file.appendText(generateHeader(features))
+            }
 
-            if(!args.noHeader)
-                args.outputFile.appendText(generateHeader(features))
+            args.outputFile.delete()
+            writeHeaderIfNeeded(args.outputFile)
 
             val compiledData = compile(indexData, features)
 
@@ -45,6 +49,7 @@ class Main {
                     args.outputFile.appendText(renderedScaledData)
                 else {
                     args.scaledOutputFile!!.delete()
+                    writeHeaderIfNeeded(args.scaledOutputFile!!)
                     args.scaledOutputFile!!.appendText(renderedScaledData)
                 }
 
