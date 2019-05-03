@@ -73,9 +73,9 @@ class Main {
             }
         }
 
-        private fun buildScalersList(args: Args): List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>> {
+        private fun buildScalersList(args: Args): List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>?> {
             val featureColumnScalers = args.config.features?.map {
-                it.createScaler() as Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>
+                it.createScaler() as Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>?
             } ?: listOf()
 
             return listOf(IndexDataPointScaler() as Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>)
@@ -83,7 +83,7 @@ class Main {
         }
 
         private fun initializeScalers(
-                scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>>,
+                scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>?>,
                 args: Args,
                 compiledData: List<List<TimeSeriesDataPoint?>>
         ) {

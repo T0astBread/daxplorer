@@ -6,7 +6,7 @@ import io.rightpad.daxplorer.data_compiler.ScalerConfig
 
 fun applyScalerConfiguration(
         config: ScalerConfig,
-        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>>
+        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>?>
 ) {
     applyIndexDataPointScalerConfig(config, scalers)
     applyMoneyScalerConfig(config, scalers)
@@ -14,7 +14,7 @@ fun applyScalerConfiguration(
 
 private fun applyIndexDataPointScalerConfig(
         config: ScalerConfig,
-        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>>
+        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>?>
 ) {
     val indexDataPointScalerConfig = IndexDataPointScalerConfig(
             startScalerConfig = config.moneyScalerConfig,
@@ -29,7 +29,7 @@ private fun applyIndexDataPointScalerConfig(
 
 fun applyMoneyScalerConfig(
         config: ScalerConfig,
-        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>>
+        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>?>
 ) {
     scalers.mapNotNull { it as? AverageDataPointScaler }
             .forEach { it.configure(config.moneyScalerConfig) }

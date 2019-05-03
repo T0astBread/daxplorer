@@ -5,11 +5,11 @@ import io.rightpad.daxplorer.data.scalers.Scaler
 
 fun scale(
         compiledData: List<List<TimeSeriesDataPoint?>>,
-        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>>
+        scalers: List<Scaler<TimeSeriesDataPoint, TimeSeriesDataPoint, Any>?>
 ): List<List<TimeSeriesDataPoint?>> {
     val scaledData = compiledData.map { row ->
         row.mapIndexed { i, featureDataPoint ->
-            if(featureDataPoint != null) scalers[i].scale(featureDataPoint)
+            if(featureDataPoint != null) scalers[i]?.scale(featureDataPoint) ?: featureDataPoint
             else null
         }
     }
