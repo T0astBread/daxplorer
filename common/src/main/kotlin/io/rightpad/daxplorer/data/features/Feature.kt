@@ -1,7 +1,7 @@
 package io.rightpad.daxplorer.data.features
 
-import io.rightpad.daxplorer.data.IndexDataPoint
-import io.rightpad.daxplorer.data.TimeSeriesDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.TimeSeriesDataPoint
 
 interface Feature<T : TimeSeriesDataPoint> {
     var featureData: List<T>?

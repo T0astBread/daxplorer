@@ -15,9 +15,11 @@ repositories {
 
 dependencies {
     compile "com.xenomachina:kotlin-argparser:2.0.7"
+    compile 'com.google.code.gson:gson:2.8.5'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile project(':common')
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile "org.jetbrains.kotlin:kotlin-reflect:1.2.70"
 }
 
 compileKotlin {

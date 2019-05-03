@@ -1,4 +1,4 @@
-package io.rightpad.daxplorer.data
+package io.rightpad.daxplorer.data.datapoints.absolute
 
 import java.time.LocalDateTime
 

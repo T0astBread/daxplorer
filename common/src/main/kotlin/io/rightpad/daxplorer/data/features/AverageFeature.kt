@@ -1,13 +1,18 @@
 package io.rightpad.daxplorer.data.features
 
-import io.rightpad.daxplorer.data.IndexDataPoint
-import io.rightpad.daxplorer.data.SimpleValueDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.AverageDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.SimpleValueDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.TimeSeriesDataPoint
+import io.rightpad.daxplorer.data.scalers.AverageDataPointScaler
+import io.rightpad.daxplorer.data.scalers.Scaler
+import io.rightpad.daxplorer.data.scalers.SimpleValueDataPointScaler
 
-class AverageFeature(var span: Int): Feature<SimpleValueDataPoint> {
-    override var featureData: List<SimpleValueDataPoint>? = null
+class AverageFeature(var span: Int): Feature<AverageDataPoint> {
+    override var featureData: List<AverageDataPoint>? = null
 
     override fun calculate(indexData: List<IndexDataPoint>) {
-        val newFeatureData = mutableListOf<SimpleValueDataPoint>()
+        val newFeatureData = mutableListOf<AverageDataPoint>()
 
         val averageSpan = mutableListOf<IndexDataPoint>()
 
@@ -18,7 +23,7 @@ class AverageFeature(var span: Int): Feature<SimpleValueDataPoint> {
                 averageSpan.removeAt(0)
 
             if(averageSpan.size == this.span)
-                newFeatureData.add(SimpleValueDataPoint(
+                newFeatureData.add(AverageDataPoint(
                         dataPoint.timestamp,
                         averageOf(averageSpan)
                 ))
@@ -35,4 +40,16 @@ class AverageFeature(var span: Int): Feature<SimpleValueDataPoint> {
 
     override fun toString(): String =
             "average[$span]"
+}
+
+class AverageFeatureConfig(
+        val span: Int
+): FeatureConfig<AverageFeature, AverageDataPointScaler> {
+    val type = "average"
+
+    override fun createFeature() =
+            AverageFeature(span)
+
+    override fun createScaler() =
+            AverageDataPointScaler()
 }

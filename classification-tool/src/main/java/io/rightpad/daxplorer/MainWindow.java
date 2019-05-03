@@ -1,7 +1,7 @@
 package io.rightpad.daxplorer;
 
-import io.rightpad.daxplorer.data.IndexDataPoint;
-import io.rightpad.daxplorer.data.TimeSeriesDataPoint;
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint;
+import io.rightpad.daxplorer.data.datapoints.absolute.TimeSeriesDataPoint;
 import io.rightpad.daxplorer.data.serialization.CsvKt;
 import io.rightpad.daxplorer.utils.FileIO;
 import io.rightpad.daxplorer.utils.SwingUtils;

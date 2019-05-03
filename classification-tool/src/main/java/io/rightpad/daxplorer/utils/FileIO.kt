@@ -1,6 +1,6 @@
 package io.rightpad.daxplorer.utils
 
-import io.rightpad.daxplorer.data.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
 import java.io.File
 import java.io.FileOutputStream
 import java.util.stream.Collector

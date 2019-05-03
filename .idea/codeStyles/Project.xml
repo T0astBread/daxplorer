@@ -28,7 +28,7 @@
     <HTMLCodeStyleSettings>
       <option name="HTML_DO_NOT_INDENT_CHILDREN_OF" value="" />
     </HTMLCodeStyleSettings>
-    <JSCodeStyleSettings>
+    <JSCodeStyleSettings version="0">
       <option name="SPACE_BEFORE_FUNCTION_LEFT_PARENTH" value="false" />
       <option name="SPACE_BEFORE_ASYNC_ARROW_LPAREN" value="false" />
     </JSCodeStyleSettings>
@@ -37,7 +37,7 @@
       <option name="ALIGN_IN_COLUMNS_CASE_BRANCH" value="true" />
       <option name="SPACE_BEFORE_WHEN_PARENTHESES" value="false" />
     </JetCodeStyleSettings>
-    <TypeScriptCodeStyleSettings>
+    <TypeScriptCodeStyleSettings version="0">
       <option name="SPACE_BEFORE_FUNCTION_LEFT_PARENTH" value="false" />
       <option name="SPACE_BEFORE_ASYNC_ARROW_LPAREN" value="false" />
     </TypeScriptCodeStyleSettings>
