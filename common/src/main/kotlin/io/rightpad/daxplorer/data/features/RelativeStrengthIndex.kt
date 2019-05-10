@@ -1,7 +1,7 @@
 package io.rightpad.daxplorer.data.features
 
 import io.rightpad.daxplorer.data.DoubleDataPoint
-import io.rightpad.daxplorer.data.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalUnit
