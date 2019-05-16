@@ -1,12 +1,12 @@
 package io.rightpad.daxplorer.data.features
 
-import io.rightpad.daxplorer.data.datapoints.absolute.DoubleDataPoint
 import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.SimpleValueDataPoint
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-class RelativeStrengthIndex: Feature<DoubleDataPoint> {
-    override var featureData: List<DoubleDataPoint>? = null
+class RelativeStrengthIndex: Feature<SimpleValueDataPoint> {
+    override var featureData: List<SimpleValueDataPoint>? = null
 
     var x = 100
     var smoothingWeight = 14
@@ -19,9 +19,9 @@ class RelativeStrengthIndex: Feature<DoubleDataPoint> {
 
     override fun calculate(indexData: List<IndexDataPoint>) {
 
-        val rawRSI = MutableList<DoubleDataPoint?>(indexData.size) { null }
+        val rawRSI = MutableList<SimpleValueDataPoint?>(indexData.size) { null }
 
-        val RSlist = MutableList<DoubleDataPoint?>(indexData.size) { null }
+        val RSlist = MutableList<SimpleValueDataPoint?>(indexData.size) { null }
         // relRSI   = mutableListOf<DoubleDataPoint?>();
         // val AvgGains = MutableList<Double?>(indexData.size) {null}
         //   val AvgLosses = MutableList<Double?>(indexData.size) {null}
@@ -30,45 +30,45 @@ class RelativeStrengthIndex: Feature<DoubleDataPoint> {
 
         for(i in 1 until x) {
 
-            var listDifference = indexData.subList(0, i).map { (it.end - it.start).toDouble() }
+            var listDifference = indexData.subList(0, i).map { (it.end - it.start).toFloat() }
 
             var RS = calculateRS(listDifference)
 
 
-            RSlist[i] = DoubleDataPoint(RS, indexData[i].timestamp)
+            RSlist[i] = SimpleValueDataPoint(indexData[i].timestamp, RS)
             var RSI = 100 - (100 / (1 + RS))
             // if(loss==0.0)RSI = 100.0;
             if(RSI < 0 || RSI > 100) throw InvalidRSIException("Raw RSI [$RSI] is out of bounds [0,100]")
-            rawRSI[i] = DoubleDataPoint(RSI, indexData[i].timestamp)
+            rawRSI[i] = SimpleValueDataPoint(indexData[i].timestamp, RSI)
         }
 
 
         for(i in x until indexData.size) {
-            var listDifference = indexData.subList(i - x, i).map { (it.end - it.start).toDouble() }
+            var listDifference = indexData.subList(i - x, i).map { (it.end - it.start).toFloat() }
 
             var RS = calculateRS(listDifference)
 
-            RSlist[i] = DoubleDataPoint(RS, indexData[i].timestamp)
+            RSlist[i] = SimpleValueDataPoint(indexData[i].timestamp, RS)
 
             var RSI = 100 - (100 / (1 + RS))
 
             if(RSI < 0 || RSI > 100) throw InvalidRSIException("Raw RSI [$RSI] is out of bounds [0,100]")
-            rawRSI[i] = DoubleDataPoint(RSI, indexData[i].timestamp)
+            rawRSI[i] = SimpleValueDataPoint(indexData[i].timestamp, RSI)
 
         }
 
-        val smoothRSI = MutableList<DoubleDataPoint?>(indexData.size) { null }
+        val smoothRSI = MutableList<SimpleValueDataPoint?>(indexData.size) { null }
         // val smoothRS = mutableListOf<DoubleDataPoint?>();
         //smoothRS[0]=RSlist[0];
 
         // var filteredRS = RSlist;
 
         for(i in 1 until RSlist.size) {
-            var last = RSlist[i - 1]?.featureValue
-            var current = RSlist[i]?.featureValue
+            var last = RSlist[i - 1]?.value
+            var current = RSlist[i]?.value
             if(last == null || current == null) System.err.println("An value is null, inserting default value for $i")
 
-            var RS = (((last ?: 1.0) * (smoothingWeight - 1)) + (current ?: 1.0)) / smoothingWeight
+            var RS = (((last ?: 1.0f) * (smoothingWeight - 1)) + (current ?: 1.0f)) / smoothingWeight
             var RSI = 100 - 100 / (1 + RS)
             if(RSI < 0 || RSI > 100) throw InvalidRSIException("RSI [$RSI] is out of bounds [0,100]")
 
@@ -76,29 +76,29 @@ class RelativeStrengthIndex: Feature<DoubleDataPoint> {
             System.err.println("$i RSI:$RSI")
 
             if(RSlist[i] != null) {
-                var d = DoubleDataPoint(RSI, RSlist[i]!!.timestamp)
+                var d = SimpleValueDataPoint(RSlist[i]!!.timestamp, RSI)
                 smoothRSI.add(i, d)
             }
             else {
                 System.err.println("$i No RS, Skipped")
             }
         }
-        featureData = smoothRSI.filter { it != null && !it.featureValue.isNaN() }.map { it!! }
+        featureData = smoothRSI.filter { it != null && !it.value.isNaN() }.map { it!! }
 
         System.err.print("")
 
 
     }
 
-    private fun calculateRS(listDifference: List<Double>): Double {
+    private fun calculateRS(listDifference: List<Float>): Float {
         var gain = listDifference.filter { it > 0 }.sum() / (100 * x)
         var loss = listDifference.filter { it < 0 }.sum() / (-100 * x)
         var RS = (gain / loss)
-        if(!RS.isFinite()) RS = 1.0
+        if(!RS.isFinite()) RS = 1.0f
         return RS
     }
 
-    private fun extrapolateTimeStamp(list: MutableList<DoubleDataPoint?>, index: Int): LocalDateTime {
+    private fun extrapolateTimeStamp(list: MutableList<SimpleValueDataPoint?>, index: Int): LocalDateTime {
         var before: LocalDateTime? = null
         var after: LocalDateTime? = null
 
