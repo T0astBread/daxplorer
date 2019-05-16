@@ -118,4 +118,23 @@ class RelativeStrengthIndex: Feature<SimpleValueDataPoint> {
         before = before.plusDays(ChronoUnit.DAYS.between(before, after) / 2)
         return before
     }
+
+    override fun toString() = "rsi[smoothingWeight=$smoothingWeight,scale=$scale]"
+}
+
+
+class RelativeStrengthIndexFeatureConfig(
+        val smoothingWeight: Int,
+        val scale: Int? = null
+): FeatureConfig<RelativeStrengthIndex, Nothing?> {
+
+    override fun createFeature() =
+            RelativeStrengthIndex().apply {
+                this.smoothingWeight = this@RelativeStrengthIndexFeatureConfig.smoothingWeight
+
+                if(this@RelativeStrengthIndexFeatureConfig.scale != null)
+                    this.scale = this@RelativeStrengthIndexFeatureConfig.scale
+            }
+
+    override fun createScaler() = null
 }
