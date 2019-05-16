@@ -1,6 +1,6 @@
 package io.rightpad.daxplorer.visualization.visualizers
 
-import io.rightpad.daxplorer.data.DoubleDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.DoubleDataPoint
 import io.rightpad.daxplorer.data.features.Feature
 import io.rightpad.daxplorer.data.features.RelativeStrengthIndex
 import io.rightpad.daxplorer.utils.daysSinceEpoch
