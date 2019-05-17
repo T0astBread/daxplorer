@@ -47,4 +47,21 @@ class MACD(private val feature1: AverageFeature, private val feature2: AverageFe
 
     private fun calculateEma(value: Float, Ema: Float, Ew: Float): Float =
             ((value - Ema) * Ew) + Ema
+
+    override fun toString() = "macd[${feature1},${feature2}]"
+}
+
+
+class MACDConfig(
+        val average1: AverageFeatureConfig,
+        val average2: AverageFeatureConfig
+) : FeatureConfig<MACD, Nothing?> {
+    override fun createFeature(): MACD {
+        val avgFeature1 = this.average1.createFeature()
+        val avgFeature2 = this.average2.createFeature()
+
+        return MACD(avgFeature1, avgFeature2)
+    }
+
+    override fun createScaler() = null
 }
