@@ -33,6 +33,12 @@ public class LineChart implements Chart
         this.points.clear();
     }
 
+    public void clearBetween(float startX, float endX)
+    {
+        // Not doing anything bc it would strain the garbage collector too much
+//        this.points.removeIf(point -> point.getX() < startX && point.getX() > endX);
+    }
+
     private void sortPoints()
     {
         this.points.sort((a, b) -> Float.compare(a.getX(), b.getX()));

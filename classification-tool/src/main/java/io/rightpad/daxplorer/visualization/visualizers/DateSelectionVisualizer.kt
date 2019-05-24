@@ -22,7 +22,7 @@ class DateSelectionVisualizer : Visualizer("DateSelection") {
     override val charts: List<Chart>
         get() = listOf(this.selectionChart)
 
-    override fun visualize(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
+    override fun construct(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
         if(this.selectionStart == null || this.selectionEnd == null) {
             this.selectionChart.isSelected = false
             return
