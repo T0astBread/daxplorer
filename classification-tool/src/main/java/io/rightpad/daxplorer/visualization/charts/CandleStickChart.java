@@ -23,6 +23,12 @@ public class CandleStickChart implements Chart
         this.candleSticks.clear();
     }
 
+    public void clearBetween(float startX, float endX)
+    {
+        // Not doing anything bc it would strain the garbage collector too much
+//        this.candleSticks.removeIf(candleStick -> candleStick.x < startX && candleStick.x > endX);
+    }
+
     @Override
     public void draw(ChartPanel panel, Graphics2D g2d)
     {

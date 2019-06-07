@@ -55,15 +55,27 @@ public class VisualizationPanel extends ChartPanel
     @Override
     public void setChartWidth(float chartWidth)
     {
+        float oldWidth = getChartWidth();
         super.setChartWidth(chartWidth);
-        visualize();
+        float newWidth = getChartWidth();
+        float x = getPosition().getX();
+        updateViewportEnd(x + oldWidth, x + newWidth);
+//        visualize();
     }
 
     @Override
     public void setPosition(PointF position)
     {
+        float oldX = getPosition().getX();
         super.setPosition(position);
-        visualize();
+        float newX = getPosition().getX();
+
+        float width = getChartWidth();
+        float padding = width * .1f;
+
+        updateViewportStart(oldX - padding, newX - padding);
+        updateViewportEnd(oldX + width + padding, newX + width + padding);
+//        visualize();
     }
 
     public void setTimeOffset(LocalDateTime offset)
@@ -74,22 +86,71 @@ public class VisualizationPanel extends ChartPanel
         ));
     }
 
-    public void visualize()
+    private void updateViewportEnd(float oldEndX, float newEndX)
     {
-        visualize(getPosition().getX(), getPosition().getX() + getChartWidth());
+        if(oldEndX > newEndX)
+            removeFromViewport((int) Math.ceil(newEndX), (int) Math.ceil(oldEndX));
+        else
+//        if(oldEndX < newEndX)
+            addToViewport(oldEndX, newEndX);
+    }
+
+    private void updateViewportStart(float oldStartX, float newStartX)
+    {
+        if(oldStartX > newStartX)
+            addToViewport(newStartX, oldStartX);
+        else
+            removeFromViewport((int) Math.floor(oldStartX), (int) Math.floor(newStartX));
+    }
+
+    private void removeFromViewport(int startX, int endX)
+    {
+        removeFromViewport(
+                UtilsKt.asEpochDays(startX, ZoneOffset.UTC),
+                UtilsKt.asEpochDays(endX, ZoneOffset.UTC)
+        );
+    }
+
+    private void removeFromViewport(LocalDateTime start, LocalDateTime end)
+    {
+        this.visualizers.forEach(visualizer -> visualizer.destroy(start, end));
         repaint();
     }
 
-    private void visualize(float startX, float endX)
+    private void addToViewport(float startX, float endX)
     {
-        visualize(
+        addToViewport(
                 UtilsKt.asEpochDays((int) Math.floor(startX), ZoneOffset.UTC),
                 UtilsKt.asEpochDays((int) Math.ceil(endX), ZoneOffset.UTC)
         );
     }
 
-    private void visualize(LocalDateTime start, LocalDateTime end)
+    private void addToViewport(LocalDateTime start, LocalDateTime end)
     {
-        this.visualizers.forEach(visualizer -> visualizer.visualize(start, end));
+        this.visualizers.forEach(visualizer -> visualizer.construct(start, end));
+        repaint();
     }
+
+    public void visualize()
+    {
+//        visualize(getPosition().getX(), getPosition().getX() + getChartWidth());
+        int startX = (int) Math.floor(getPosition().getX());
+        int endX = (int) Math.ceil(startX + getChartWidth());
+        removeFromViewport(startX, endX);
+        addToViewport(startX, endX);
+        repaint();
+    }
+//
+//    private void visualize(float startX, float endX)
+//    {
+//        visualize(
+//                UtilsKt.asEpochDays((int) Math.floor(startX), ZoneOffset.UTC),
+//                UtilsKt.asEpochDays((int) Math.ceil(endX), ZoneOffset.UTC)
+//        );
+//    }
+//
+//    private void visualize(LocalDateTime start, LocalDateTime end)
+//    {
+//        this.visualizers.forEach(visualizer -> visualizer.visualize(start, end));
+//    }
 }

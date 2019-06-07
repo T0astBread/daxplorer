@@ -20,9 +20,7 @@ class IndexVisualizer: TimeSeriesVisualizer<IndexDataPoint>("Index") {
             this.candleStickChart
     )
 
-    override fun visualize(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
-        this.lineChart.clearPoints()
-        this.candleStickChart.clearCandleSticks()
+    override fun construct(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
         this.features[0].featureData
                 ?.filter { dataPoint -> dataPoint.timestamp in startTimestamp..endTimestamp }
                 ?.sortedBy { dataPoint -> dataPoint.timestamp }
@@ -50,6 +48,14 @@ class IndexVisualizer: TimeSeriesVisualizer<IndexDataPoint>("Index") {
                                 BULLISH_STICK_COLOR
                     ))
                 }
+    }
+
+    override fun destroy(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
+        val startX = startTimestamp.daysSinceEpoch()
+        val endX = endTimestamp.daysSinceEpoch()
+
+        this.lineChart.clearBetween(startX, endX)
+        this.candleStickChart.clearBetween(startX, endX)
     }
 
     companion object {

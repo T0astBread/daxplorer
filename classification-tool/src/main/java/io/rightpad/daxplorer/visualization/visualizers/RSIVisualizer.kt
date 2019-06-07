@@ -18,15 +18,19 @@ class RSIVisualizer(var low: Color, var neutral: Color, var high: Color): TimeSe
     private val thresholdLow = 30
     private val thresholdHigh = 70
 
-    override fun visualize(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
-
+    override fun construct(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
         if(rsiFeature.featureData == null) return
         this.rsiFeature.featureData!!
-                .filter { it.timestamp.daysSinceEpoch() < startTimestamp.daysSinceEpoch() || it.timestamp.daysSinceEpoch() > endTimestamp.daysSinceEpoch() }
+//                .filter { it.timestamp.daysSinceEpoch() < startTimestamp.daysSinceEpoch() || it.timestamp.daysSinceEpoch() > endTimestamp.daysSinceEpoch() }
+                .takeWhile { it.timestamp >= startTimestamp && it.timestamp < endTimestamp }
                 .forEach {
                     this.lineChart.addPoint(it.timestamp.daysSinceEpoch(), (it.value) * rsiFeature.scale / 100, getColor(it.value))
 
                 }
+    }
+
+    override fun destroy(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
+        this.lineChart.clearBetween(startTimestamp.daysSinceEpoch(), endTimestamp.daysSinceEpoch())
     }
 
     fun scale(scale: Int) {
