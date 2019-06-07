@@ -6,7 +6,8 @@ import java.time.LocalDateTime
 abstract class Visualizer(val name: String) {
     abstract val charts: List<Chart>
 
-    abstract fun visualize(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime)
+    abstract fun construct(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime)
+    open fun destroy(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {}
 
     override fun toString() = this.name
 }

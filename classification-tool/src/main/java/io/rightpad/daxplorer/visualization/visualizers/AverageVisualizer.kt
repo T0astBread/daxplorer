@@ -17,13 +17,17 @@ class AverageVisualizer(span: Int, var color: Color) : TimeSeriesVisualizer<Aver
     private val lineChart: LineChart = LineChart()
     override val charts: List<Chart> = listOf(this.lineChart)
 
-    override fun visualize(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
+    override fun construct(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
         this.averageFeature.featureData!!
-//                .takeWhile { it.timestamp >= startTimestamp && it.timestamp < endTimestamp }
+                .takeWhile { it.timestamp >= startTimestamp && it.timestamp < endTimestamp }
                 .forEach { this.lineChart.addPoint(
                         it.timestamp.daysSinceEpoch(),
                         it.value,
                         this.color
                 ) }
+    }
+
+    override fun destroy(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
+        this.lineChart.clearBetween(startTimestamp.daysSinceEpoch(), endTimestamp.daysSinceEpoch())
     }
 }
