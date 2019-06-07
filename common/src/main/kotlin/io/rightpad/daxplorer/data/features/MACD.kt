@@ -1,10 +1,11 @@
 package io.rightpad.daxplorer.data.features
 
 import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint
+import io.rightpad.daxplorer.data.datapoints.absolute.MACDDataPoint
 import io.rightpad.daxplorer.data.datapoints.absolute.SimpleValueDataPoint
 
-class MACD(private val feature1: AverageFeature, private val feature2: AverageFeature): Feature<SimpleValueDataPoint> {
-    override var featureData: List<SimpleValueDataPoint>? = null
+class MACD(private val feature1: AverageFeature, private val feature2: AverageFeature): Feature<MACDDataPoint> {
+    override var featureData: List<MACDDataPoint>? = null
 
     override fun calculate(indexData: List<IndexDataPoint>) {
         feature1.calculate(indexData)
@@ -51,11 +52,10 @@ class MACD(private val feature1: AverageFeature, private val feature2: AverageFe
     override fun toString() = "macd[${feature1},${feature2}]"
 }
 
-
 class MACDConfig(
         val average1: AverageFeatureConfig,
         val average2: AverageFeatureConfig
-) : FeatureConfig<MACD, Nothing?> {
+): FeatureConfig<MACD, Nothing?> {
     override fun createFeature(): MACD {
         val avgFeature1 = this.average1.createFeature()
         val avgFeature2 = this.average2.createFeature()

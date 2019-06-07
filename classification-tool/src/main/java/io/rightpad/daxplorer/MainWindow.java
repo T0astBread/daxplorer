@@ -11,11 +11,7 @@ import io.rightpad.daxplorer.uxsugar.ViewportOffsetChangeMouseListener;
 import io.rightpad.daxplorer.uxsugar.ViewportSpanYChangeMouseListener;
 import io.rightpad.daxplorer.visualization.PointF;
 import io.rightpad.daxplorer.visualization.VisualizationPanel;
-import io.rightpad.daxplorer.visualization.visualizers.AverageVisualizer;
-import io.rightpad.daxplorer.visualization.visualizers.DateSelectionVisualizer;
-import io.rightpad.daxplorer.visualization.visualizers.IndexVisualizer;
-import io.rightpad.daxplorer.visualization.visualizers.RSIVisualizer;
-import io.rightpad.daxplorer.visualization.visualizers.Visualizer;
+import io.rightpad.daxplorer.visualization.visualizers.*;
 import kotlin.jvm.functions.Function0;
 
 import javax.swing.*;
@@ -253,6 +249,10 @@ public class MainWindow
         addVisualizer(this.selectionVisualizer);
         addVisualizer(new RSIVisualizer(Color.red,Color.yellow,Color.green));
         addVisualizer(new AverageVisualizer(50, Color.blue));
+        addVisualizer(new MACDVisualizer(
+                new AverageVisualizer(100, Color.decode("#cc0000")),
+                new AverageVisualizer(200, Color.decode("#ff0000"))
+        ));
     }
 
     private void initSelectionTextFieldListeners()
