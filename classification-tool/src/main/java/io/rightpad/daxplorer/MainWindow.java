@@ -1,7 +1,9 @@
 package io.rightpad.daxplorer;
 
-import io.rightpad.daxplorer.data.datapoints.absolute.IndexDataPoint;
-import io.rightpad.daxplorer.data.datapoints.absolute.TimeSeriesDataPoint;
+import io.rightpad.daxplorer.data.datapoints.absolute.*;
+import io.rightpad.daxplorer.data.features.AverageFeature;
+import io.rightpad.daxplorer.data.features.Feature;
+import io.rightpad.daxplorer.data.features.MACD;
 import io.rightpad.daxplorer.data.serialization.CsvKt;
 import io.rightpad.daxplorer.utils.FileIO;
 import io.rightpad.daxplorer.utils.SwingUtils;
@@ -247,11 +249,19 @@ public class MainWindow
         addVisualizer(new IndexVisualizer());
         this.selectionVisualizer = new DateSelectionVisualizer();
         addVisualizer(this.selectionVisualizer);
-        addVisualizer(new RSIVisualizer(Color.red,Color.yellow,Color.green));
-        addVisualizer(new AverageVisualizer(50, Color.blue));
-        addVisualizer(new MACDVisualizer(
-                new AverageVisualizer(100, Color.decode("#cc0000")),
-                new AverageVisualizer(200, Color.decode("#ff0000"))
+        addVisualizer(new RSIVisualizer(Color.red, Color.yellow, Color.green));
+        addVisualizer(new SimpleValueVisualizer<AverageDataPoint>(
+                "Average",
+                new AverageFeature(50),
+                Color.blue
+        ));
+        addVisualizer(new SimpleValueVisualizer<MACDDataPoint>(
+                "MACD",
+                new MACD(
+                        new AverageFeature(100),
+                        new AverageFeature(200)
+                ),
+                Color.blue
         ));
     }
 

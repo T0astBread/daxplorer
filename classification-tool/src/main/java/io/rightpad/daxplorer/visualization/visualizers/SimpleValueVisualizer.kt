@@ -10,15 +10,19 @@ import io.rightpad.daxplorer.visualization.charts.LineChart
 import java.awt.Color
 import java.time.LocalDateTime
 
-class AverageVisualizer(span: Int, var color: Color) : TimeSeriesVisualizer<AverageDataPoint>("Average") {
-    private val averageFeature: AverageFeature = AverageFeature(span)
-    override val features: List<Feature<AverageDataPoint>> = listOf(this.averageFeature)
+open class SimpleValueVisualizer<T : SimpleValueDataPoint>(
+        name: String,
+        val feature: Feature<T>,
+        var color: Color
+) : TimeSeriesVisualizer<T>(name) {
+
+    override val features: List<Feature<T>> = listOf(this.feature)
 
     private val lineChart: LineChart = LineChart()
     override val charts: List<Chart> = listOf(this.lineChart)
 
     override fun construct(startTimestamp: LocalDateTime, endTimestamp: LocalDateTime) {
-        this.averageFeature.featureData!!
+        this.feature.featureData!!
                 .takeWhile { it.timestamp >= startTimestamp && it.timestamp < endTimestamp }
                 .forEach { this.lineChart.addPoint(
                         it.timestamp.daysSinceEpoch(),
