@@ -25,22 +25,22 @@ class MACD(private val feature1: AverageFeature, private val feature2: AverageFe
             listEma2.add(SimpleValueDataPoint(item.timestamp, ema2))
         }
 
-        val listMacd = mutableListOf<SimpleValueDataPoint>()
-
-        if(feature1.featureData!!.size > feature2.featureData!!.size) {
-            for(i in 0 until feature1.featureData!!.size) {
-                if(i < listEma1.size && i < listEma2.size) {
-                    val value: Float = listEma2[i].value - listEma1[i].value
-                    listMacd.add(SimpleValueDataPoint(feature1.featureData!![i].timestamp, value))
-                }
-            }
+        val listMacd = mutableListOf<MACDDataPoint>()
+        var smalerList = if(listEma1.size < listEma2.size) {
+            listEma1.size
         }
         else {
-            for(i in 0 until feature2.featureData!!.size) {
-                if(i < listEma1.size && i < listEma2.size) {
-                    val value: Float = listEma2[i].value - listEma1[i].value
-                    listMacd.add(SimpleValueDataPoint(feature2.featureData!![i].timestamp, value))
-                }
+            listEma2.size
+        }
+
+        for(i in 0 until smalerList) {
+            if(feature1.featureData!!.size > feature2.featureData!!.size) {
+                val value: Float = listEma2[i].value - listEma1[i].value
+                listMacd.add(MACDDataPoint(feature1.featureData!![i].timestamp, value))
+            }
+            else {
+                val value: Float = listEma1[i].value - listEma2[i].value
+                listMacd.add(MACDDataPoint(feature2.featureData!![i].timestamp, value))
             }
         }
         featureData = listMacd
@@ -65,3 +65,4 @@ class MACDConfig(
 
     override fun createScaler() = null
 }
+
